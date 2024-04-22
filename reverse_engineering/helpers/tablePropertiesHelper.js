@@ -1,4 +1,4 @@
-const mapSortColumns = (items) => {
+const mapSortColumns = (items = []) => {
     return items.map(item => ({
         name: item.Column,
         type: item.SortOrder === 1 ? 'ascending' : 'descending'
@@ -55,7 +55,7 @@ const mapTableProperties = (parameters = {}) => {
     }, []);
 }
 
-const getNumBuckets = (numBuckets) => {
+const getNumBuckets = (numBuckets = 0) => {
     return numBuckets < 1 ? undefined : numBuckets;
 }
 
@@ -69,17 +69,17 @@ const mapTableData = (tableData, _) => {
             externalTable: tableData.Table.TableType === 'EXTERNAL_TABLE',
             tableProperties: mapTableProperties(tableData.Table.Parameters),
             compositePartitionKey: partitionKeys.map(item => item.Name),
-            compositeClusteringKey: tableData.Table.StorageDescriptor.BucketColumns,
-            sortedByKey: mapSortColumns(tableData.Table.StorageDescriptor.SortColumns),
-            compressed: tableData.Table.StorageDescriptor.Compressed,
-            location: tableData.Table.StorageDescriptor.Location,
-            numBuckets: getNumBuckets(tableData.Table.StorageDescriptor.NumberOfBuckets),
-            StoredAsSubDirectories: tableData.Table.StorageDescriptor.StoredAsSubDirectories,
-            inputFormatClassname: tableData.Table.StorageDescriptor.InputFormat,
-            outputFormatClassname: tableData.Table.StorageDescriptor.OutputFormat,
-            serDeLibrary: getSerDeLibrary(tableData.Table.StorageDescriptor.SerdeInfo),
-            parameterPaths: mapSerDePaths(_, tableData.Table.StorageDescriptor.SerdeInfo),
-            serDeParameters: mapSerDeParameters(tableData.Table.StorageDescriptor.SerdeInfo.Parameters),
+            compositeClusteringKey: tableData.Table.StorageDescriptor?.BucketColumns,
+            sortedByKey: mapSortColumns(tableData.Table.StorageDescriptor?.SortColumns),
+            compressed: tableData.Table.StorageDescriptor?.Compressed,
+            location: tableData.Table.StorageDescriptor?.Location,
+            numBuckets: getNumBuckets(tableData.Table.StorageDescriptor?.NumberOfBuckets),
+            StoredAsSubDirectories: tableData.Table.StorageDescriptor?.StoredAsSubDirectories,
+            inputFormatClassname: tableData.Table.StorageDescriptor?.InputFormat,
+            outputFormatClassname: tableData.Table.StorageDescriptor?.OutputFormat,
+            serDeLibrary: getSerDeLibrary(tableData.Table.StorageDescriptor?.SerdeInfo),
+            parameterPaths: mapSerDePaths(_, tableData.Table.StorageDescriptor?.SerdeInfo),
+            serDeParameters: mapSerDeParameters(tableData.Table.StorageDescriptor?.SerdeInfo?.Parameters),
             classification: getClassification(tableData.Table.Parameters),
         },
         partitionKeys: tableData.Table.PartitionKeys || [],
