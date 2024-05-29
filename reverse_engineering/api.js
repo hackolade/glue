@@ -8,8 +8,8 @@ const hqlToCollectionsVisitor = require('./hqlToCollectionsVisitor.js');
 const commandsService = require('./commandsService');
 const ExprErrorListener = require('./antlrErrorListener');
 const { adaptJsonSchema } = require('./adaptJsonSchema');
-const schemaHelper = require("./schemaHelper");
-const connectionHelper = require("./helpers/connectionHelper");
+const schemaHelper = require('./schemaHelper');
+const connectionHelper = require('./helpers/connectionHelper');
 const { setDependencies, dependencies } = require('./appDependencies');
 
 module.exports = {
@@ -55,7 +55,7 @@ module.exports = {
 				return {
 					dbName: db.Name,
 					dbCollections,
-					isEmpty: dbCollections.length === 0
+					isEmpty: dbCollections.length === 0,
 				};
 			});
 
@@ -70,26 +70,24 @@ module.exports = {
 				loadMore: true,
 			};
 
-			cb(null, [ ...result, loadMore ]);
-		} catch(err) {
+			cb(null, [...result, loadMore]);
+		} catch (err) {
 			logger.log(
 				'error',
 				{ message: err.message, stack: err.stack, error: err },
-				'Retrieving databases and tables information'
+				'Retrieving databases and tables information',
 			);
 			cb(err);
 		}
-
 	},
 
 	async getDbCollectionsData(data, logger, cb, app) {
 		setDependencies(app);
 		logger.log('info', data, 'Retrieving schema', data.hiddenKeys);
-		
+
 		const { collectionData } = data;
 		const databases = collectionData.dataBaseNames;
 		const tables = collectionData.collections;
-
 
 		try {
 			const connection = await this.connect(data);
@@ -102,17 +100,17 @@ module.exports = {
 					logger.progress({
 						message: 'Getting table data',
 						containerName: dbName,
-						entityName: tableName
+						entityName: tableName,
 					});
 
 					const tableData = await instance.getTable(dbName, tableName);
-					const jsonSchema = getColumnsSchema([ ...tableData.columns, ...tableData.partitionKeys ])
+					const jsonSchema = getColumnsSchema([...tableData.columns, ...tableData.partitionKeys]);
 
 					return {
 						dbName,
 						collectionName: tableData.name,
 						bucketInfo: {
-							description: dbDescription
+							description: dbDescription,
 						},
 						entityLevel: {
 							...tableData.entityLevelData,
@@ -121,8 +119,8 @@ module.exports = {
 						documents: [],
 						validation: {
 							jsonSchema,
-						}
-					}
+						},
+					};
 				});
 				return await Promise.all(dbTables);
 			});
@@ -130,11 +128,11 @@ module.exports = {
 			const tablesData = await Promise.all(tablesDataPromise);
 			const flatTablesData = tablesData.reduce((acc, val) => acc.concat(val), []);
 			cb(null, flatTablesData);
-		} catch(err) {
+		} catch (err) {
 			logger.log(
 				'error',
 				{ message: err.message, stack: err.stack, error: err },
-				'Retrieving databases and tables information'
+				'Retrieving databases and tables information',
 			);
 			cb({ message: err.message, stack: err.stack });
 		}
@@ -159,11 +157,11 @@ module.exports = {
 
 			const commands = tree.accept(hqlToCollectionsGenerator);
 			const { result, info, relationships } = commandsService.convertCommandsToReDocs(
-                _.flatten(commands).filter(Boolean),
-                input
-            );
+				_.flatten(commands).filter(Boolean),
+				input,
+			);
 			callback(null, result, info, relationships, 'multipleSchema');
-		} catch(err) {
+		} catch (err) {
 			const { error, title, name } = err;
 			const handledError = handleErrorObject(error || err, title || name);
 			logger.log('error', handledError, title);
@@ -176,9 +174,8 @@ module.exports = {
 
 const handleFileData = filePath => {
 	return new Promise((resolve, reject) => {
-
 		fs.readFile(filePath, 'utf-8', (err, content) => {
-			if(err) {
+			if (err) {
 				reject(err);
 			} else {
 				resolve(content);
@@ -188,12 +185,15 @@ const handleFileData = filePath => {
 };
 
 const handleErrorObject = (error, title) => {
-	const errorProperties = Object.getOwnPropertyNames(error).reduce((accumulator, key) => ({ ...accumulator, [key]: error[key] }), {});
+	const errorProperties = Object.getOwnPropertyNames(error).reduce(
+		(accumulator, key) => ({ ...accumulator, [key]: error[key] }),
+		{},
+	);
 
-	return { title , ...errorProperties };
+	return { title, ...errorProperties };
 };
 
-const getColumnsSchema = (columns) => {
+const getColumnsSchema = columns => {
 	return columns.reduce((acc, item) => {
 		const sanitizedTypeString = item.type.replace(/\s/g, '');
 		let columnSchema = schemaHelper.getJsonSchema(sanitizedTypeString);
@@ -207,4 +207,3 @@ const logInfo = (step, connectionInfo, logger) => {
 	logger.log('info', logHelper.getSystemInfo(connectionInfo.appVersion), step);
 	logger.log('info', connectionInfo, 'connectionInfo', connectionInfo.hiddenKeys);
 };
-

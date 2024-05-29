@@ -11,18 +11,24 @@
 		{
 			"name": "AWS Glue CLI Script",
 			"keyword": "awsCli",
-			"fileExtensions": [{
-				"label": "application/txt", "value": "txt"
-			}]
+			"fileExtensions": [
+				{
+					"label": "application/txt",
+					"value": "txt"
+				}
+			]
 		},
 		{
 			"name": "HiveQL Script",
 			"keyword": "hiveQl",
 			"mode": "sql",
 			"disableApplyScriptToInstance": true,
-			"fileExtensions": [{
-				"label": "application/hql", "value": "hql"
-			}]
+			"fileExtensions": [
+				{
+					"label": "application/hql",
+					"value": "hql"
+				}
+			]
 		}
 	],
 	"resolvedDefinitions": true,

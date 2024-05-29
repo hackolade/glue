@@ -127,11 +127,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Subtype",
 				"propertyKeyword": "mode",
 				"propertyType": "select",
-				"options": [
-					"string",
-					"varchar",
-					"char"
-				],
+				"options": ["string", "varchar", "char"],
 				"data": "options",
 				"valueType": "string"
 			},
@@ -178,15 +174,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Subtype",
 				"propertyKeyword": "mode",
 				"propertyType": "select",
-				"options": [
-					"tinyint",
-					"smallint",
-					"int",
-					"bigint",
-					"float",
-					"double",
-					"decimal"
-				],
+				"options": ["tinyint", "smallint", "int", "bigint", "float", "double", "decimal"],
 				"data": "options",
 				"valueType": "string"
 			},
@@ -479,21 +467,13 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key type",
 				"propertyKeyword": "keyType",
 				"propertyType": "select",
-				"options": [
-					"",
-					"text",
-					"numeric"
-				]
+				"options": ["", "text", "numeric"]
 			},
 			{
 				"propertyName": "Key subtype",
 				"propertyKeyword": "keySubtype",
 				"propertyType": "select",
-				"options": [
-					"string",
-					"varchar",
-					"char"
-				],
+				"options": ["string", "varchar", "char"],
 				"dependency": {
 					"key": "keyType",
 					"value": "text"
@@ -503,15 +483,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Key subtype",
 				"propertyKeyword": "keySubtype",
 				"propertyType": "select",
-				"options": [
-					"tinyint",
-					"smallint",
-					"int",
-					"bigint",
-					"float",
-					"double",
-					"decimal"
-				],
+				"options": ["tinyint", "smallint", "int", "bigint", "float", "double", "decimal"],
 				"dependency": {
 					"key": "keyType",
 					"value": "numeric"
@@ -642,4 +614,4 @@ making sure that you maintain a proper JSON format.
 			"comments"
 		]
 	}
-} 
+}

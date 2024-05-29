@@ -35,7 +35,6 @@
 		"set<struct>": {
 			"childValueType": "struct"
 		},
-		"set<union>": {
-		}
+		"set<union>": {}
 	}
 }

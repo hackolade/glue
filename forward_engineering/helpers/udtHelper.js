@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const { tab, getNameWithKeyspace, eachField } = require('./generalHelper');
 const { getColumnDefinition } = require('./columnHelper');
@@ -18,10 +18,10 @@ const getName = (name, property) => {
 };
 
 const getCreateTypeStatement = (keyspaceName, typeName, fieldsDefinitions) => {
-	return `CREATE TYPE IF NOT EXISTS ${getNameWithKeyspace(keyspaceName, typeName)} (\n${tab(fieldsDefinitions)}\n);`
+	return `CREATE TYPE IF NOT EXISTS ${getNameWithKeyspace(keyspaceName, typeName)} (\n${tab(fieldsDefinitions)}\n);`;
 };
 
-const getUdtMap = (udtSources) => {
+const getUdtMap = udtSources => {
 	return udtSources.reduce((map, source) => {
 		eachField(source, (field, fieldName) => {
 			if (field.type === 'udt') {
@@ -30,7 +30,7 @@ const getUdtMap = (udtSources) => {
 
 			return field;
 		});
-		
+
 		return map;
 	}, {});
 };
@@ -42,7 +42,7 @@ const getAllUdt = (jsonSchema, udtTypeMap) => {
 		if (field.type === 'udt' && field.properties) {
 			udts.push({
 				name: getName(fieldName, field),
-				definition: getColumnDefinition(field.properties, udtTypeMap)
+				definition: getColumnDefinition(field.properties, udtTypeMap),
 			});
 		}
 
@@ -54,5 +54,5 @@ const getAllUdt = (jsonSchema, udtTypeMap) => {
 
 module.exports = {
 	getUdtScripts,
-	getUdtMap
+	getUdtMap,
 };

@@ -1,12 +1,8 @@
 {
-  "name": "Glue",
-  "version": "1.0.0",
-  "description": "",
-  "author": "Hackolade",
-  "dependencies": {
-    "antlr4": "^4.8.0",
-    "aws-sdk": "^2.1603.0"
-  },
-  "type": "multi",
-  "installed": true
+    "name": "Glue",
+    "version": "1.0.0",
+    "description": "",
+    "author": "Hackolade",
+    "type": "multi",
+    "installed": true
 }
