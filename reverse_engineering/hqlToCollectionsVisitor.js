@@ -54,8 +54,6 @@ class Visitor extends HiveParserVisitor {
 		if (execStatement) {
 			return this.visit(execStatement);
 		}
-
-		return;
 	}
 
 	visitExecStatement(ctx) {
@@ -63,15 +61,12 @@ class Visitor extends HiveParserVisitor {
 		if (ddlStatement) {
 			return this.visit(ddlStatement);
 		}
-
-		return;
 	}
 
 	visitDdlStatement(ctx) {
 		if (ALLOWED_COMMANDS.includes(ctx.children[0].ruleIndex)) {
 			return super.visitDdlStatement(ctx)[0];
 		}
-		return;
 	}
 
 	visitCreateTableStatement(ctx) {
@@ -355,8 +350,6 @@ class Visitor extends HiveParserVisitor {
 				...this.visit(ctx.alterViewStatementSuffix()),
 			};
 		}
-
-		return;
 	}
 
 	visitAlterTableStatementSuffix(ctx) {
@@ -373,15 +366,6 @@ class Visitor extends HiveParserVisitor {
 		]
 			.map(statement => this.visitWhenExists(ctx, statement))
 			.filter(Boolean)[0];
-	}
-
-	visitAlterStatementSuffixRename(ctx) {
-		const { database, table } = this.visit(ctx.tableName());
-
-		return {
-			type: RENAME_COLLECTION_COMMAND,
-			newCollectionName: table,
-		};
 	}
 
 	visitAlterStatementSuffixProperties(ctx) {
@@ -687,10 +671,6 @@ class Visitor extends HiveParserVisitor {
 			childField,
 			parentField,
 		};
-	}
-
-	visitColumnParenthesesList(ctx) {
-		return this.visit(ctx.columnNameList());
 	}
 
 	visitColumnNameList(ctx) {
@@ -1083,16 +1063,6 @@ class Visitor extends HiveParserVisitor {
 
 	visitTableProperties(ctx) {
 		return ctx.getText();
-	}
-
-	visitDropIndexStatement(ctx) {
-		const { database, table } = this.visit(ctx.tableName());
-		return {
-			type: REMOVE_COLLECTION_LEVEL_INDEX_COMMAND,
-			indexName: this.visit(ctx.identifier()),
-			collectionName: table,
-			bucketName: database,
-		};
 	}
 
 	visitResourcePlanDdlStatements(ctx) {
