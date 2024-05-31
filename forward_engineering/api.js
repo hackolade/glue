@@ -1,6 +1,6 @@
 'use strict';
 
-const aws = require('../reverse_engineering/node_modules/aws-sdk');
+const aws = require('aws-sdk');
 const { getDatabaseStatement } = require('./helpers/databaseHelper');
 const { getTableStatement } = require('./helpers/tableHelper');
 const { getIndexes } = require('./helpers/indexHelper');
