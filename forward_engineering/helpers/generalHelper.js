@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const { dependencies } = require('../appDependencies');
 
@@ -35,19 +35,23 @@ const buildStatement = (mainStatement, isActivated) => {
 	return chain;
 };
 
-const getName = (entity) => entity.code || entity.collectionName || entity.name || '';
-const getTab = (tabNum, configData) => Array.isArray(configData) ? (configData[tabNum] || {}) : {};
-const indentString = (str, tab = 4) => (str || '').split('\n').map(s => ' '.repeat(tab) + s).join('\n');
+const getName = entity => entity.code || entity.collectionName || entity.name || '';
+const getTab = (tabNum, configData) => (Array.isArray(configData) ? configData[tabNum] || {} : {});
+const indentString = (str, tab = 4) =>
+	(str || '')
+		.split('\n')
+		.map(s => ' '.repeat(tab) + s)
+		.join('\n');
 
 const descriptors = {};
-const getTypeDescriptor = (typeName) => {
+const getTypeDescriptor = typeName => {
 	if (descriptors[typeName]) {
 		return descriptors[typeName];
 	}
 
 	try {
 		descriptors[typeName] = require(`../../types/${typeName}.json`);
-		
+
 		return descriptors[typeName];
 	} catch (e) {
 		return {};
@@ -64,7 +68,7 @@ const prepareName = name => {
 
 const replaceSpaceWithUnderscore = (name = '') => {
 	return name.replace(/\s/g, '_');
-}
+};
 
 const commentDeactivatedStatements = (statement, isActivated = true) => {
 	if (isActivated) {
@@ -73,20 +77,16 @@ const commentDeactivatedStatements = (statement, isActivated = true) => {
 	const insertBeforeEachLine = (statement, insertValue) =>
 		statement
 			.split('\n')
-			.map((line) => `${insertValue}${line}`)
+			.map(line => `${insertValue}${line}`)
 			.join('\n');
 
 	return insertBeforeEachLine(statement, '-- ');
-}
+};
 
 const commentDeactivatedInlineKeys = (keys, deactivatedKeyNames) => {
 	const [activatedKeys, deactivatedKeys] = dependencies.lodash.partition(
 		keys,
-		(key) =>
-			!(
-				deactivatedKeyNames.has(key) ||
-				deactivatedKeyNames.has(key.slice(1, -1))
-			)
+		key => !(deactivatedKeyNames.has(key) || deactivatedKeyNames.has(key.slice(1, -1))),
 	);
 	if (activatedKeys.length === 0) {
 		return { isAllKeysDeactivated: true, keysString: deactivatedKeys.join(', ') };
@@ -95,18 +95,21 @@ const commentDeactivatedInlineKeys = (keys, deactivatedKeyNames) => {
 		return { isAllKeysDeactivated: false, keysString: activatedKeys.join(', ') };
 	}
 
-	return { isAllKeysDeactivated: false, keysString: `${activatedKeys.join(', ')} /*, ${deactivatedKeys.join(', ')} */` }
-}
+	return {
+		isAllKeysDeactivated: false,
+		keysString: `${activatedKeys.join(', ')} /*, ${deactivatedKeys.join(', ')} */`,
+	};
+};
 
 const commentStatementIfAllKeysDeactivated = (statement, keys) => {
-	if(keys.isAllKeysDeactivated){
+	if (keys.isAllKeysDeactivated) {
 		return `/* ${statement} */`;
 	}
 
 	return statement;
-}
+};
 
-const removeRedundantTrailingCommaFromStatement = (statement) => {
+const removeRedundantTrailingCommaFromStatement = statement => {
 	const splitedStatement = statement.split('\n');
 	if (splitedStatement.length < 4 || !splitedStatement[splitedStatement.length - 2].trim().startsWith('--')) {
 		return statement;
@@ -117,12 +120,12 @@ const removeRedundantTrailingCommaFromStatement = (statement) => {
 		}
 	});
 	if (lineWithTrailingCommaIndex !== -1) {
-		splitedStatement[lineWithTrailingCommaIndex] = `${splitedStatement[lineWithTrailingCommaIndex].slice(0,-1)} -- ,`;
+		splitedStatement[lineWithTrailingCommaIndex] =
+			`${splitedStatement[lineWithTrailingCommaIndex].slice(0, -1)} -- ,`;
 		return splitedStatement.join('\n');
 	}
 	return statement;
-} 
-
+};
 
 module.exports = {
 	buildStatement,

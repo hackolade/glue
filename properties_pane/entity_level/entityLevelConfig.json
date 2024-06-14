@@ -151,11 +151,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "rowFormat",
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
-				"options": [
-					"",
-					"delimited",
-					"SerDe"
-				]
+				"options": ["", "delimited", "SerDe"]
 			},
 			{
 				"propertyName": "Fields terminated by",
@@ -316,7 +312,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "compositePartitionKey",
 				"propertyType": "primaryKeySetter",
 				"abbr": "pk"
-			}, 
+			},
 			{
 				"propertyName": "Disable No Validate",
 				"propertyKeyword": "disableNoValidate",
@@ -371,14 +367,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "classification",
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
-				"options": [
-					"Avro",
-					"CSV",
-					"JSON",
-					"XML",
-					"Parquet",
-					"ORC"
-				]
+				"options": ["Avro", "CSV", "JSON", "XML", "Parquet", "ORC"]
 			},
 			{
 				"propertyName": "Table properties",

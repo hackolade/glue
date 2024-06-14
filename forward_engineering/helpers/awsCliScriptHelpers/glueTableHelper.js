@@ -1,5 +1,10 @@
 const { CLI, CREATE_TABLE } = require('./cliConstants');
-const { getGlueTableColumns, getGluePartitionKeyTableColumns, getGlueTableClusteringKeyColumns, getGlueTableSortingColumns } = require('./glueColumnHelper');
+const {
+	getGlueTableColumns,
+	getGluePartitionKeyTableColumns,
+	getGlueTableClusteringKeyColumns,
+	getGlueTableSortingColumns,
+} = require('./glueColumnHelper');
 
 const getGlueTableCreateStatement = (tableSchema, databaseName) => {
 	const tableParameters = {
@@ -17,43 +22,45 @@ const getGlueTableCreateStatement = (tableSchema, databaseName) => {
 				SerdeInfo: mapSerdeInfo(tableSchema),
 				BucketColumns: getGlueTableClusteringKeyColumns(tableSchema.properties),
 				SortColumns: getGlueTableSortingColumns(tableSchema.sortedByKey, tableSchema.properties),
-				StoredAsSubDirectories: tableSchema.StoredAsSubDirectories
+				StoredAsSubDirectories: tableSchema.StoredAsSubDirectories,
 			},
 			Parameters: mapTableParameters(tableSchema),
 			PartitionKeys: getGluePartitionKeyTableColumns(tableSchema.properties),
-			TableType: tableSchema.externalTable ? 'EXTERNAL_TABLE' : ''
-		}
+			TableType: tableSchema.externalTable ? 'EXTERNAL_TABLE' : '',
+		},
 	};
 
 	const cliStatement = `${CLI} ${CREATE_TABLE} '${JSON.stringify(tableParameters, null, 2)}'`;
 	return cliStatement;
 };
 
-const mapSerdeInfo = (tableSchema) => {
+const mapSerdeInfo = tableSchema => {
 	const paths = getSerdePathParams(tableSchema.parameterPaths, tableSchema.properties);
 	const serDeParameters = getSerDeParams(tableSchema.serDeParameters);
 	return {
 		SerializationLibrary: tableSchema.serDeLibrary,
-		Parameters: Object.assign({}, { paths }, serDeParameters)
+		Parameters: Object.assign({}, { paths }, serDeParameters),
 	};
-}
+};
 
 const getSerdePathParams = (parameterPaths = [], properties = {}) => {
-	return parameterPaths.map(({ keyId }) => {
-		const property = Object.entries(properties).find(([key, value]) => value.GUID === keyId);
-		const propertyName = property && property[0];
-		return propertyName;
-	}).join(',');
-}
+	return parameterPaths
+		.map(({ keyId }) => {
+			const property = Object.entries(properties).find(([key, value]) => value.GUID === keyId);
+			const propertyName = property && property[0];
+			return propertyName;
+		})
+		.join(',');
+};
 
 const getSerDeParams = (params = []) => {
 	return params.reduce((acc, param) => {
 		acc[param.serDeKey] = param.serDeValue;
 		return acc;
 	}, {});
-}
+};
 
-const mapTableParameters = (tableSchema) => {
+const mapTableParameters = tableSchema => {
 	try {
 		const props = (tableSchema.tableProperties || []).reduce((acc, prop) => {
 			acc[prop.tablePropKey] = prop.tablePropValue;
@@ -63,11 +70,11 @@ const mapTableParameters = (tableSchema) => {
 			props.classification = tableSchema.classification.toLowerCase();
 		}
 		return props;
-	} catch(err) {
+	} catch (err) {
 		return {};
 	}
-}
+};
 
 module.exports = {
-	getGlueTableCreateStatement
+	getGlueTableCreateStatement,
 };
