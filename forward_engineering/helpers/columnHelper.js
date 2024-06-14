@@ -1,6 +1,14 @@
-'use strict'
+'use strict';
 
-const { buildStatement, getName, getTab, indentString, getTypeDescriptor, prepareName, commentDeactivatedStatements } = require('./generalHelper');
+const {
+	buildStatement,
+	getName,
+	getTab,
+	indentString,
+	getTypeDescriptor,
+	prepareName,
+	commentDeactivatedStatements,
+} = require('./generalHelper');
 
 const getStructChild = (name, type, comment) => `${name}: ${type}` + (comment ? ` COMMENT ${comment}` : '');
 
@@ -12,7 +20,7 @@ const getStructChildProperties = getTypeByProperty => property => {
 	if (childProperties.length) {
 		childProperties.forEach(propertyName => {
 			const childProperty = property.properties[propertyName];
-			const name = (getName(childProperty) || propertyName);
+			const name = getName(childProperty) || propertyName;
 			const isActivated = childProperty.isActivated !== false;
 			const structChild = getStructChild(name, getTypeByProperty(childProperty), childProperty.comments);
 			if (isActivated) {
@@ -41,8 +49,8 @@ const getStructChildProperties = getTypeByProperty => property => {
 };
 
 const getStruct = getTypeByProperty => property => {
-	const getStructStatement = (propertiesString) => `struct<${propertiesString}>`;
-	
+	const getStructStatement = propertiesString => `struct<${propertiesString}>`;
+
 	const { activatedProps, deactivatedProps } = getStructChildProperties(getTypeByProperty)(property);
 	if (deactivatedProps.length === 0) {
 		return getStructStatement(activatedProps.join(', '));
@@ -54,16 +62,19 @@ const getStruct = getTypeByProperty => property => {
 
 const getChildBySubtype = (parentType, subtype) => {
 	const childValueType = ((getTypeDescriptor(parentType).subtypes || {})[subtype] || {}).childValueType || 'text';
-	
+
 	return getPropertyByType(childValueType);
 };
 
-const getPropertyByType = (type) => {
+const getPropertyByType = type => {
 	const childTypeDescriptor = getTypeDescriptor(type);
 
-	return Object.assign({
-		type
-	}, childTypeDescriptor.defaultValues || {});
+	return Object.assign(
+		{
+			type,
+		},
+		childTypeDescriptor.defaultValues || {},
+	);
 };
 
 const getTypeForArrayLikeField = (getTypeByProperty, property) => {
@@ -80,7 +91,7 @@ const getTypeForArrayLikeField = (getTypeByProperty, property) => {
 		const name = Object.keys(unions)[0];
 		return unions[name];
 	}
-}
+};
 
 const getArray = getTypeByProperty => property => {
 	let type = getTypeForArrayLikeField(getTypeByProperty, property);
@@ -102,7 +113,7 @@ const getSet = getTypeByProperty => property => {
 	return `set<${type}>`;
 };
 
-const getMapKey = (property) => {
+const getMapKey = property => {
 	if (['char', 'varchar'].indexOf(property.keySubtype) !== -1) {
 		return property.keySubtype + '(255)';
 	} else if (property.keySubtype) {
@@ -136,7 +147,7 @@ const getMap = getTypeByProperty => property => {
 	return `map<${key}, ${type}>`;
 };
 
-const getText = (property) => {
+const getText = property => {
 	const mode = property.mode;
 
 	if (['char', 'varchar'].indexOf(mode) === -1) {
@@ -148,7 +159,7 @@ const getText = (property) => {
 	}
 };
 
-const getNumeric = (property) => {
+const getNumeric = property => {
 	const mode = property.mode;
 
 	if (mode !== 'decimal') {
@@ -171,8 +182,8 @@ const getJsonType = getTypeByProperty => property => {
 const getUnionTypeFromMultiple = getTypeByProperty => property => {
 	const types = property.type.map(type => {
 		const dataType = type === 'number' ? 'numeric' : type;
-		
-		return getTypeByProperty(getPropertyByType(dataType))
+
+		return getTypeByProperty(getPropertyByType(dataType));
 	});
 
 	return `union<${types.join(',')}>`;
@@ -207,21 +218,17 @@ const getUnionFromAllOf = getTypeByProperty => property => {
 		if (!Array.isArray(subschema.oneOf)) {
 			return types;
 		}
-		
-		return Object.assign(
-			{},
-			types,
-			getUnionFromOneOf(getTypeByProperty)(subschema)
-		);
+
+		return Object.assign({}, types, getUnionFromOneOf(getTypeByProperty)(subschema));
 	}, {});
 };
 
-const getTypeByProperty = (property) => {
+const getTypeByProperty = property => {
 	if (Array.isArray(property.type)) {
 		return getUnionTypeFromMultiple(getTypeByProperty)(property);
 	}
-	
-	switch(property.type) {
+
+	switch (property.type) {
 		case 'jsonObject':
 		case 'jsonArray':
 			return getJsonType(getTypeByProperty)(property);
@@ -249,7 +256,7 @@ const getTypeByProperty = (property) => {
 };
 
 const getColumn = (name, type, comment, constraints, isActivated) => ({
-	[name]: { type, comment, constraints, isActivated }
+	[name]: { type, comment, constraints, isActivated },
 });
 
 const getColumns = jsonSchema => {
@@ -261,7 +268,7 @@ const getColumns = jsonSchema => {
 		if (!property.isActivated) {
 			deactivatedColumnNames.add(name);
 		}
-		
+
 		return Object.assign(
 			{},
 			hash,
@@ -273,62 +280,56 @@ const getColumns = jsonSchema => {
 					notNull: isRequired,
 					unique: property.unique,
 					check: property.check,
-					defaultValue: property.default
+					defaultValue: property.default,
 				},
-				property.isActivated
-			)
+				property.isActivated,
+			),
 		);
 	}, {});
 
 	if (Array.isArray(jsonSchema.oneOf)) {
 		const unions = getUnionFromOneOf(getTypeByProperty)(jsonSchema);
 
-		columns = Object.keys(unions).reduce((hash, typeName) => Object.assign(
-			{},
-			hash,
-			getColumn(typeName, unions[typeName])
-		), columns);
-	} 
-	
+		columns = Object.keys(unions).reduce(
+			(hash, typeName) => Object.assign({}, hash, getColumn(typeName, unions[typeName])),
+			columns,
+		);
+	}
+
 	if (Array.isArray(jsonSchema.allOf)) {
 		const unions = getUnionFromAllOf(getTypeByProperty)(jsonSchema);
-		
-		columns = Object.keys(unions).reduce((hash, typeName) => Object.assign(
-			{},
-			hash,
-			getColumn(typeName, unions[typeName])
-		), columns);
+
+		columns = Object.keys(unions).reduce(
+			(hash, typeName) => Object.assign({}, hash, getColumn(typeName, unions[typeName])),
+			columns,
+		);
 	}
 
 	return { columns, deactivatedColumnNames };
 };
 
 const getColumnStatement = ({ name, type, comment, constraints, isActivated, isParentActivated }) => {
-	const commentStatement = comment 
-		? ` COMMENT '${comment}'`
-		: '';
-	
+	const commentStatement = comment ? ` COMMENT '${comment}'` : '';
+
 	const constraintsStaitment = constraints ? getColumnConstraintsStaitment(constraints) : '';
 	const isColumnActivated = isParentActivated ? isActivated : true;
 	return commentDeactivatedStatements(`${name} ${type}${commentStatement}${constraintsStaitment}`, isColumnActivated);
 };
 
 const getColumnsStatement = (columns, isParentActivated) => {
-	return Object.keys(columns).map((name) => {
-		return getColumnStatement(Object.assign(
-			{},
-			columns[name],
-			{ name, isParentActivated }
-		))
-	}).join(',\n');
+	return Object.keys(columns)
+		.map(name => {
+			return getColumnStatement(Object.assign({}, columns[name], { name, isParentActivated }));
+		})
+		.join(',\n');
 };
 
 const getColumnConstraintsStaitment = ({ notNull, unique, check, defaultValue }) => {
 	const constraints = [
-		(notNull && !unique) ? 'NOT NULL' : '',
+		notNull && !unique ? 'NOT NULL' : '',
 		unique ? 'UNIQUE' : '',
 		defaultValue ? `DEFAULT ${defaultValue}` : '',
-		check ? `CHECK ${check}` : ''
+		check ? `CHECK ${check}` : '',
 	].filter(Boolean);
 	const constraintsStaitment = constraints.join(' ');
 
@@ -341,5 +342,5 @@ module.exports = {
 	getColumnStatement,
 	getTypeByProperty,
 	getUnionFromOneOf,
-	getUnionFromAllOf
+	getUnionFromAllOf,
 };

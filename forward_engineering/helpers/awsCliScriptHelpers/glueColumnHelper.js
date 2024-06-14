@@ -26,7 +26,7 @@ const getGlueTableSortingColumns = (sortingItems = [], properties = {}) => {
 		const propertyName = property && property[0];
 		return {
 			Column: propertyName,
-			SortOrder: item.type === 'ascending' ? 1 : 0
+			SortOrder: item.type === 'ascending' ? 1 : 0,
 		};
 	});
 };
@@ -35,9 +35,9 @@ const mapColumn = (name, data) => {
 	return {
 		Name: name,
 		Type: getTypeByProperty(data),
-		Comment: data.comments
+		Comment: data.comments,
 	};
-}
+};
 
 const getUnionColumns = (allOf, oneOf) => {
 	let columns = [];
@@ -45,28 +45,28 @@ const getUnionColumns = (allOf, oneOf) => {
 	if (Array.isArray(oneOf)) {
 		const unions = getUnionFromOneOf(getTypeByProperty)({ oneOf });
 		const oneOfColumns = Object.keys(unions).reduce((acc, typeName) => {
-			acc = [...acc, { Name: typeName, Type: unions[typeName] }]
+			acc = [...acc, { Name: typeName, Type: unions[typeName] }];
 			return acc;
 		}, []);
 		columns = [...columns, ...oneOfColumns];
-	} 
-	
+	}
+
 	if (Array.isArray(allOf)) {
 		const unions = getUnionFromAllOf(getTypeByProperty)({ allOf });
-		
+
 		const allOfColumns = Object.keys(unions).reduce((acc, typeName) => {
-			acc = [...acc, { Name: typeName, Type: unions[typeName] }]
+			acc = [...acc, { Name: typeName, Type: unions[typeName] }];
 			return acc;
 		}, []);
 		columns = [...columns, ...allOfColumns];
 	}
 
 	return columns;
-}
+};
 
 module.exports = {
 	getGlueTableColumns,
 	getGluePartitionKeyTableColumns,
 	getGlueTableClusteringKeyColumns,
-	getGlueTableSortingColumns
+	getGlueTableSortingColumns,
 };
