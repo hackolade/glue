@@ -14,9 +14,7 @@ const { setDependencies, dependencies } = require('./appDependencies');
 
 module.exports = {
 	async connect(connectionInfo) {
-		const connection = await connectionHelper.connect(connectionInfo);
-
-		return connection;
+		return connectionHelper.connect(connectionInfo);
 	},
 
 	disconnect(connectionInfo, cb) {

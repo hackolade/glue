@@ -1,4 +1,10 @@
-const aws = require('aws-sdk');
+const {
+	GlueClient,
+	GetTableCommand,
+	GetTablesCommand,
+	GetDatabaseCommand,
+	GetDatabasesCommand,
+} = require('@aws-sdk/client-glue');
 const fs = require('fs');
 const https = require('https');
 const { mapTableData } = require('./tablePropertiesHelper');
@@ -63,9 +69,16 @@ const createConnection = async connectionInfo => {
 			}
 		: {};
 
-	aws.config.update({ accessKeyId, secretAccessKey, region, sessionToken, ...httpOptions });
-
-	return new aws.Glue();
+	return new GlueClient({
+		region,
+		credentials: {
+			accessKeyId,
+			secretAccessKey,
+			sessionToken,
+		},
+		// TODO: verify ssl options to be applied correctly
+		...httpOptions,
+	});
 };
 const connect = async connectionInfo => {
 	if (connection) {
@@ -89,9 +102,8 @@ const close = () => {
 
 const createInstance = (connection, _) => {
 	const getDatabases = async () => {
-		const dbsData = await connection
-			.getDatabases({ MaxResults: MAX_RESULTS, NextToken: databaseLoadContinuationToken })
-			.promise();
+		const command = new GetDatabasesCommand({ MaxResults: MAX_RESULTS, NextToken: databaseLoadContinuationToken });
+		const dbsData = await connection.send(command);
 
 		databaseLoadContinuationToken = dbsData.NextToken ? dbsData.NextToken : null;
 
@@ -102,14 +114,14 @@ const createInstance = (connection, _) => {
 	};
 
 	const getDatabaseDescription = async dbName => {
-		const db = await connection.getDatabase({ Name: dbName }).promise();
+		const command = new GetDatabaseCommand({ Name: dbName });
+		const db = await connection.send(command);
 		return db.Database.Description;
 	};
 
 	const getTableList = async (dbName, nextToken) => {
-		const tableListResponse = await connection
-			.getTables({ DatabaseName: dbName, ...(nextToken && { NextToken: nextToken }) })
-			.promise();
+		const command = new GetTablesCommand({ DatabaseName: dbName, ...(nextToken && { NextToken: nextToken }) });
+		const tableListResponse = await connection.send(command);
 
 		let nextTableList = [];
 		if (tableListResponse.NextToken) {
@@ -125,7 +137,9 @@ const createInstance = (connection, _) => {
 	};
 
 	const getTable = async (dbName, tableName) => {
-		const rawTableData = await connection.getTable({ DatabaseName: dbName, Name: tableName }).promise();
+		const command = new GetTableCommand({ DatabaseName: dbName, Name: tableName });
+
+		const rawTableData = await connection.send(command);
 
 		return mapTableData(rawTableData, _);
 	};
