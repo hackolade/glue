@@ -5,6 +5,7 @@ const {
 	GetDatabaseCommand,
 	GetDatabasesCommand,
 } = require('@aws-sdk/client-glue');
+const { FetchHttpHandler } = require('@aws-sdk/fetch-http-handler');
 const fs = require('fs');
 const https = require('https');
 const { mapTableData } = require('./tablePropertiesHelper');
@@ -28,6 +29,7 @@ const readCertificateFile = path => {
 		});
 	});
 };
+
 const getSslOptions = async connectionInfo => {
 	switch (connectionInfo.sslType) {
 		case 'Server validation': {
@@ -57,17 +59,18 @@ const getSslOptions = async connectionInfo => {
 const createConnection = async connectionInfo => {
 	const { accessKeyId, secretAccessKey, region, sessionToken } = connectionInfo;
 	const sslOptions = await getSslOptions(connectionInfo);
-	const httpOptions = sslOptions.ssl
-		? {
-				httpOptions: {
-					agent: new https.Agent({
-						rejectUnauthorized: true,
-						...sslOptions,
-					}),
-				},
-				...sslOptions,
-			}
-		: {};
+
+	const agent = new https.Agent({
+		rejectUnauthorized: true,
+		...sslOptions,
+	});
+
+	const httpHandler = new FetchHttpHandler({
+		httpAgent: agent,
+		httpsAgent: agent,
+		// UtilityProcess.fork() creates a Chromium child process and Chromium does provide the Fetch API.
+		fetch: fetch,
+	});
 
 	return new GlueClient({
 		region,
@@ -76,8 +79,7 @@ const createConnection = async connectionInfo => {
 			secretAccessKey,
 			sessionToken,
 		},
-		// TODO: verify ssl options to be applied correctly
-		...httpOptions,
+		requestHandler: httpHandler,
 	});
 };
 const connect = async connectionInfo => {
