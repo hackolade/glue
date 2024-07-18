@@ -59,7 +59,24 @@ const getNumBuckets = (numBuckets = 0) => {
 	return numBuckets < 1 ? undefined : numBuckets;
 };
 
-const mapTableData = (tableData, _) => {
+const mapColumns = ({ columns = [], logger = {} }) => {
+	let hasErrors = false;
+
+	const mapped = columns.map(({ Type, Name }) => {
+		if (!Type || !Name) {
+			hasErrors = true;
+		}
+		return { name: Name, type: Type };
+	});
+
+	if (hasErrors) {
+		logger.log('info', columns, 'Some columns are missing required Type or Name');
+	}
+
+	return mapped;
+};
+
+const mapTableData = ({ tableData, _, logger }) => {
 	const partitionKeys = tableData.Table.PartitionKeys || [];
 
 	return {
@@ -83,7 +100,7 @@ const mapTableData = (tableData, _) => {
 			classification: getClassification(tableData.Table.Parameters),
 		},
 		partitionKeys: tableData.Table.PartitionKeys || [],
-		columns: tableData.Table.StorageDescriptor.Columns.map(({ Type, Name }) => ({ name: Name, type: Type })),
+		columns: mapColumns({ columns: tableData.Table.StorageDescriptor.Columns, logger }),
 	};
 };
 

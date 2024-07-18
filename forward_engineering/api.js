@@ -1,6 +1,6 @@
 'use strict';
 
-const aws = require('aws-sdk');
+const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
 const { getDatabaseStatement } = require('./helpers/databaseHelper');
 const { getTableStatement } = require('./helpers/tableHelper');
 const { getIndexes } = require('./helpers/indexHelper');
@@ -142,7 +142,8 @@ module.exports = {
 			}
 			const dbCreatePromises = db.map(async statement => {
 				logger.progress({ message: 'Creating database', containerName: statement.DatabaseInput.Name });
-				return await glueInstance.createDatabase(statement).promise();
+				const command = new CreateDatabaseCommand(statement);
+				return await glueInstance.send(command);
 			});
 			await Promise.all(dbCreatePromises);
 			const tableCreatePromises = table.map(async statement => {
@@ -151,7 +152,8 @@ module.exports = {
 					containerName: statement.DatabaseName,
 					entityName: statement.TableInput.Name,
 				});
-				return await glueInstance.createTable(statement).promise();
+				const command = new CreateTableCommand(statement);
+				return await glueInstance.send(command);
 			});
 			await Promise.all(tableCreatePromises);
 			callback();
@@ -167,7 +169,8 @@ module.exports = {
 		const glueInstance = getGlueInstance(connectionInfo, app);
 
 		try {
-			await glueInstance.getDatabases().promise();
+			const command = new GetDatabasesCommand();
+			await glueInstance.send(command);
 			callback();
 		} catch (err) {
 			logger.log('error', { message: err.message, stack: err.stack, error: err }, 'Connection failed');
@@ -192,8 +195,14 @@ const buildAWSCLIModelScript = (containerData, tablesSchemas = {}) => {
 
 const getGlueInstance = (connectionInfo, app) => {
 	const { accessKeyId, secretAccessKey, region, sessionToken } = connectionInfo;
-	aws.config.update({ accessKeyId, secretAccessKey, region, sessionToken });
-	return new aws.Glue();
+	return new GlueClient({
+		region,
+		credentials: {
+			accessKeyId,
+			secretAccessKey,
+			sessionToken,
+		},
+	});
 };
 
 const composeCLIStatements = (statements = []) => {

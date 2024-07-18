@@ -14,9 +14,7 @@ const { setDependencies, dependencies } = require('./appDependencies');
 
 module.exports = {
 	async connect(connectionInfo) {
-		const connection = await connectionHelper.connect(connectionInfo);
-
-		return connection;
+		return connectionHelper.connect(connectionInfo);
 	},
 
 	disconnect(connectionInfo, cb) {
@@ -30,7 +28,7 @@ module.exports = {
 		logInfo('Test connection', connectionInfo, logger);
 
 		const connection = await this.connect(connectionInfo);
-		const instance = connectionHelper.createInstance(connection, dependencies.lodash);
+		const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
 
 		try {
 			await instance.getDatabases();
@@ -48,7 +46,7 @@ module.exports = {
 
 		try {
 			const connection = await this.connect(connectionInfo);
-			const instance = connectionHelper.createInstance(connection, dependencies.lodash);
+			const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
 			const { databaseList, isFullyUploaded } = await instance.getDatabases();
 			const dbsCollections = databaseList.map(async db => {
 				const dbCollections = await instance.getTables(db.Name);
@@ -91,7 +89,7 @@ module.exports = {
 
 		try {
 			const connection = await this.connect(data);
-			const instance = connectionHelper.createInstance(connection, dependencies.lodash);
+			const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
 
 			const tablesDataPromise = databases.map(async dbName => {
 				const dbDescription = await instance.getDatabaseDescription(dbName);
@@ -104,7 +102,10 @@ module.exports = {
 					});
 
 					const tableData = await instance.getTable(dbName, tableName);
-					const jsonSchema = getColumnsSchema([...tableData.columns, ...tableData.partitionKeys]);
+					const jsonSchema = getColumnsSchema({
+						columns: [...tableData.columns, ...tableData.partitionKeys],
+						logger,
+					});
 
 					return {
 						dbName,
@@ -193,10 +194,16 @@ const handleErrorObject = (error, title) => {
 	return { title, ...errorProperties };
 };
 
-const getColumnsSchema = columns => {
+const getColumnsSchema = ({ columns, logger }) => {
 	return columns.reduce((acc, item) => {
-		const sanitizedTypeString = item.type.replace(/\s/g, '');
-		let columnSchema = schemaHelper.getJsonSchema(sanitizedTypeString);
+		if (!item) {
+			return acc;
+		}
+		if (!item.type) {
+			logger.log('info', item, 'Column Type is missing, fallback to string');
+		}
+		const sanitizedTypeString = item.type?.replace(/\s/g, '') || 'string';
+		const columnSchema = schemaHelper.getJsonSchema(sanitizedTypeString);
 		schemaHelper.setProperty(item.name, columnSchema, acc);
 		return acc;
 	}, {});
