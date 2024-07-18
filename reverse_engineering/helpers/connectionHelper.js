@@ -8,6 +8,7 @@ const {
 const fs = require('fs');
 const https = require('https');
 const { mapTableData } = require('./tablePropertiesHelper');
+const { HttpHandler } = require('../httpHandler/HttpHandler');
 
 let connection;
 let databaseLoadContinuationToken;
@@ -28,6 +29,7 @@ const readCertificateFile = path => {
 		});
 	});
 };
+
 const getSslOptions = async connectionInfo => {
 	switch (connectionInfo.sslType) {
 		case 'Server validation': {
@@ -57,17 +59,13 @@ const getSslOptions = async connectionInfo => {
 const createConnection = async connectionInfo => {
 	const { accessKeyId, secretAccessKey, region, sessionToken } = connectionInfo;
 	const sslOptions = await getSslOptions(connectionInfo);
-	const httpOptions = sslOptions.ssl
-		? {
-				httpOptions: {
-					agent: new https.Agent({
-						rejectUnauthorized: true,
-						...sslOptions,
-					}),
-				},
-				...sslOptions,
-			}
-		: {};
+
+	const agent = new https.Agent({
+		rejectUnauthorized: true,
+		...sslOptions,
+	});
+
+	const httpHandler = new HttpHandler(agent);
 
 	return new GlueClient({
 		region,
@@ -76,8 +74,7 @@ const createConnection = async connectionInfo => {
 			secretAccessKey,
 			sessionToken,
 		},
-		// TODO: verify ssl options to be applied correctly
-		...httpOptions,
+		requestHandler: httpHandler.handler,
 	});
 };
 const connect = async connectionInfo => {
