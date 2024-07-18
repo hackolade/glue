@@ -1,6 +1,6 @@
 'use strict';
 
-const { GlueClient, CreateDatabaseCommand, CreateTableCommand } = require('@aws-sdk/client-glue');
+const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
 const { getDatabaseStatement } = require('./helpers/databaseHelper');
 const { getTableStatement } = require('./helpers/tableHelper');
 const { getIndexes } = require('./helpers/indexHelper');
@@ -169,7 +169,8 @@ module.exports = {
 		const glueInstance = getGlueInstance(connectionInfo, app);
 
 		try {
-			await glueInstance.getDatabases().promise();
+			const command = new GetDatabasesCommand();
+			await glueInstance.send(command);
 			callback();
 		} catch (err) {
 			logger.log('error', { message: err.message, stack: err.stack, error: err }, 'Connection failed');
