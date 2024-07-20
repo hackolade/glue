@@ -271,10 +271,12 @@ const getParserByType = type => {
 	}
 };
 
-const getJsonSchema = (str, sample) => {
+const getJsonSchema = (str, sample, logger = {}) => {
 	const type = getType(str);
 	const content = splitContent(cleanContent(str));
-
+	if (logger.log) {
+		logger.log('info', { type, content }, 'getting json schema');
+	}
 	return getParserByType(type)(content, sample);
 };
 

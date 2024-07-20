@@ -202,8 +202,9 @@ const getColumnsSchema = ({ columns, logger }) => {
 		if (!item.type) {
 			logger.log('info', item, 'Column Type is missing, fallback to string');
 		}
+		logger.log('info', item, 'Column Type');
 		const sanitizedTypeString = item.type?.replace(/\s/g, '') || 'string';
-		const columnSchema = schemaHelper.getJsonSchema(sanitizedTypeString);
+		const columnSchema = schemaHelper.getJsonSchema(sanitizedTypeString, undefined, logger);
 		schemaHelper.setProperty(item.name, columnSchema, acc);
 		return acc;
 	}, {});
