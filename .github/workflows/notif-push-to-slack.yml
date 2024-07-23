@@ -7,14 +7,13 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: github.event.pusher.name == 'bigorn0'
     env:
         AUTHOR: ${{ github.event.pusher.name }}
+        COMMIT_PUSH_SOURCE: ${{ secrets.COMMIT_PUSH_SOURCE }}
     steps:
-      - name: notify
-        run: echo "${AUTHOR}"
       - name: notify slack
         id: slack
+        if: ${{ env.AUTHOR == env.COMMIT_PUSH_SOURCE }}
         uses: slackapi/slack-github-action@v1.26.0
         with:
             channel-id: 'develop-direct-pushes'
@@ -26,7 +25,7 @@ jobs:
                         "type": "section",
                         "text": {
                         "type": "mrkdwn",
-                        "text": "Direct push to develop: ${{ github.event.head_commit.url }}"
+                        "text": "Push: ${{ github.event.head_commit.url }}"
                         }
                     }
                     ]
