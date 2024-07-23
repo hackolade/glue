@@ -77,7 +77,7 @@ const mapColumns = ({ columns = [], logger = {} }) => {
 };
 
 const mapTableData = ({ tableData, _, logger }) => {
-	const partitionKeys = tableData.Table.PartitionKeys || [];
+	const partitionKeys = mapColumns({ columns: tableData.Table.PartitionKeys, logger });
 
 	return {
 		name: tableData.Table.Name,
@@ -85,7 +85,7 @@ const mapTableData = ({ tableData, _, logger }) => {
 			description: tableData.Table.Description,
 			externalTable: tableData.Table.TableType === 'EXTERNAL_TABLE',
 			tableProperties: mapTableProperties(tableData.Table.Parameters),
-			compositePartitionKey: partitionKeys.map(item => item.Name),
+			compositePartitionKey: partitionKeys.map(item => item.name),
 			compositeClusteringKey: tableData.Table.StorageDescriptor?.BucketColumns,
 			sortedByKey: mapSortColumns(tableData.Table.StorageDescriptor?.SortColumns),
 			compressed: tableData.Table.StorageDescriptor?.Compressed,
@@ -99,7 +99,7 @@ const mapTableData = ({ tableData, _, logger }) => {
 			serDeParameters: mapSerDeParameters(tableData.Table.StorageDescriptor?.SerdeInfo?.Parameters),
 			classification: getClassification(tableData.Table.Parameters),
 		},
-		partitionKeys: tableData.Table.PartitionKeys || [],
+		partitionKeys,
 		columns: mapColumns({ columns: tableData.Table.StorageDescriptor.Columns, logger }),
 	};
 };
