@@ -1,21 +1,21 @@
 {
 	"model": {
-		"modelName": "New model",
+		"modelName": "new_model",
 		"dbVersion": "2.x",
 		"dbVendor": "Glue"
 	},
 	"container": {
-		"name": "New database",
+		"name": "new_database",
 		"indexes": []
 	},
 	"collection": {
-		"collectionName": "New table",
+		"collectionName": "new_table",
 		"collectionUsers": [],
 		"collation": {},
 		"storedAsTable": "input/output format"
 	},
 	"field": {
-		"name": "New column"
+		"name": "new_column"
 	},
 	"patternField": {
 		"name": "^[a-zA-Z0-9_.-]+$"
@@ -37,7 +37,7 @@
 		"pipeline": ""
 	},
 	"SecIndxs": {
-		"name": "New Secondary Index",
+		"name": "new_secondary_index",
 		"SecIndxKey": "",
 		"SecIndxID": "",
 		"SecIndxHandler": "org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler",
