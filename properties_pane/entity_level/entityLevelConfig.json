@@ -311,7 +311,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Partition key",
 				"propertyKeyword": "compositePartitionKey",
 				"propertyType": "primaryKeySetter",
-				"abbr": "pk"
+				"abbr": "pk,PK"
 			},
 			{
 				"propertyName": "Disable No Validate",
@@ -322,7 +322,7 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Clustering key",
 				"propertyKeyword": "compositeClusteringKey",
 				"propertyType": "primaryKeySetter",
-				"abbr": "ck"
+				"abbr": "pk,CK"
 			},
 			{
 				"propertyName": "Sorted by",
