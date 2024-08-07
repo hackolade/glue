@@ -17,7 +17,7 @@ module.exports = {
 		return connectionHelper.connect(connectionInfo);
 	},
 
-	disconnect(connectionInfo, cb) {
+	disconnect(connectionInfo, logger, cb, app) {
 		connectionHelper.close();
 
 		cb();
