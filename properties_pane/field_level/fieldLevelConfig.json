@@ -142,7 +142,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -215,7 +230,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -281,7 +311,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -315,7 +360,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -350,7 +410,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -384,7 +459,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -437,7 +527,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -514,7 +619,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -549,7 +669,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -596,7 +731,22 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"propertyName": "Primary Key",
+				"propertyKeyword": "primaryKey",
+				"shouldValidate": false,
+				"propertyType": "checkbox",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",

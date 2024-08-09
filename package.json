@@ -1,6 +1,6 @@
 {
     "name": "Glue",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "author": "hackolade",
     "engines": {
         "hackolade": "6.9.11",
@@ -28,7 +28,8 @@
                         "hiveQl"
                     ]
                 }
-            ]
+            ],
+            "enableKeysMultipleAbrr": true
         }
     },
     "description": "Hackolade plugin for AWS Glue Data Catalog",
