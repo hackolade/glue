@@ -34,7 +34,7 @@
     },
     "description": "Hackolade plugin for AWS Glue Data Catalog",
     "dependencies": {
-        "@aws-sdk/client-glue": "3.613.0",
+        "@aws-sdk/client-glue": "3.627.0",
         "@aws-sdk/fetch-http-handler": "3.374.0",
         "antlr4": "4.8.0",
         "lodash": "4.17.21"
