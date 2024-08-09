@@ -150,7 +150,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -232,7 +238,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -307,7 +319,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -350,7 +368,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -394,7 +418,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -437,7 +467,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -499,7 +535,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -585,7 +627,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -629,7 +677,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
@@ -685,7 +739,13 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"disabledOnTab": "view",
 				"valueType": "boolean",
-				"abbr": "pk"
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
 			},
 			{
 				"propertyName": "Unique",
