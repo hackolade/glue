@@ -142,7 +142,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -215,7 +248,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -281,7 +347,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -315,7 +414,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -350,7 +482,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -384,7 +549,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -437,7 +635,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -514,7 +745,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -549,7 +813,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
@@ -596,7 +893,40 @@ making sure that you maintain a proper JSON format.
 				"enableForReference": true,
 				"propertyType": "checkbox"
 			},
-			"primaryKey",
+			{
+				"fieldName": "Primary Key",
+				"fieldKeyword": "primaryKey",
+				"shouldValidate": false,
+				"fieldType": "checkbox",
+				"changeAction": "changePrimaryKeyOfField",
+				"enableForReference": true,
+				"disabledOnTab": "view",
+				"valueType": "boolean",
+				"abbr": "pk",
+				"disabledOnCondition": [
+					{
+						"key": "refType",
+						"value": "collectionReference"
+					},
+					{
+						"level": "root",
+						"key": "viewOn",
+						"exist": true
+					},
+					{
+						"type": "not",
+						"values": {
+							"level": "parent",
+							"key": "type",
+							"value": "object"
+						}
+					},
+					{
+						"key": "isActivated",
+						"value": false
+					}
+				]
+			},
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "unique",
