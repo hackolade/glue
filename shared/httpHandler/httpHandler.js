@@ -33,7 +33,7 @@ class HttpHandler {
 	 */
 	async handle(request, { abortSignal } = {}) {
 		if (abortSignal?.aborted) {
-			return Promise.reject(this.getAbortError());
+			throw this.getAbortError();
 		}
 
 		const { method, query, protocol, port, hostname, body, headers: requestHeaders } = request;
