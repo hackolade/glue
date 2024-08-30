@@ -10,6 +10,7 @@ const { getGlueDatabaseCreateStatement } = require('./helpers/awsCliScriptHelper
 const { getGlueTableCreateStatement } = require('./helpers/awsCliScriptHelpers/glueTableHelper');
 const { getApiStatements } = require('./helpers/awsCliScriptHelpers/applyToInstanceHelper');
 const sqlFormatter = require('./custom_modules/sql-formatter');
+const { HttpHandler } = require('../shared/httpHandler/httpHandler');
 
 module.exports = {
 	generateScript(data, logger, callback) {
@@ -118,7 +119,7 @@ module.exports = {
 		}
 	},
 
-	async applyToInstance(data, logger, callback, app) {
+	async applyToInstance(data, logger, callback) {
 		if (!data.script) {
 			return callback({ message: 'Empty script' });
 		}
@@ -126,7 +127,7 @@ module.exports = {
 		logger.clear();
 		logger.log('info', data, data.hiddenKeys);
 
-		const glueInstance = getGlueInstance(data);
+		const glueInstance = getGlueInstance({ connectionInfo: data, logger });
 
 		try {
 			const { db, table } = getApiStatements(data.script);
@@ -155,10 +156,10 @@ module.exports = {
 		}
 	},
 
-	async testConnection(connectionInfo, logger, callback, app) {
+	async testConnection(connectionInfo, logger, callback) {
 		logger.log('info', connectionInfo, 'Test connection', connectionInfo.hiddenKeys);
 
-		const glueInstance = getGlueInstance(connectionInfo);
+		const glueInstance = getGlueInstance({ connectionInfo, logger });
 
 		try {
 			const command = new GetDatabasesCommand();
@@ -185,8 +186,10 @@ const buildAWSCLIModelScript = (containerData, tablesSchemas = {}) => {
 	return composeCLIStatements([dbStatement, ...tablesStatements]);
 };
 
-const getGlueInstance = connectionInfo => {
-	const { accessKeyId, secretAccessKey, region, sessionToken } = connectionInfo;
+const getGlueInstance = ({ connectionInfo, logger }) => {
+	const { accessKeyId, secretAccessKey, region, sessionToken, queryRequestTimeout } = connectionInfo;
+	const httpHandler = new HttpHandler({ logger, requestTimeout: queryRequestTimeout });
+
 	return new GlueClient({
 		region,
 		credentials: {
@@ -194,6 +197,7 @@ const getGlueInstance = connectionInfo => {
 			secretAccessKey,
 			sessionToken,
 		},
+		requestHandler: httpHandler,
 	});
 };
 
