@@ -1,4 +1,4 @@
-function requestTimeout({ requestTimeout = 0 }) {
+async function requestTimeout({ requestTimeout = 0 }) {
 	return new Promise((_, reject) => {
 		if (requestTimeout) {
 			setTimeout(() => {
