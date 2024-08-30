@@ -1,7 +1,7 @@
-'use strict';
-const logHelper = require('./logHelper');
 const fs = require('fs');
 const antlr4 = require('antlr4');
+const { flatten } = require('lodash');
+const logHelper = require('./logHelper');
 const HiveLexer = require('./parser/HiveLexer.js');
 const HiveParser = require('./parser/HiveParser.js');
 const hqlToCollectionsVisitor = require('./hqlToCollectionsVisitor.js');
@@ -10,25 +10,22 @@ const ExprErrorListener = require('./antlrErrorListener');
 const { adaptJsonSchema } = require('./adaptJsonSchema');
 const schemaHelper = require('./schemaHelper');
 const connectionHelper = require('./helpers/connectionHelper');
-const { setDependencies, dependencies } = require('./appDependencies');
 
 module.exports = {
-	async connect(connectionInfo) {
-		return connectionHelper.connect(connectionInfo);
+	async connect({ connectionInfo, logger }) {
+		return connectionHelper.connect({ connectionInfo, logger });
 	},
 
-	disconnect(connectionInfo, logger, cb, app) {
+	disconnect(connectionInfo, logger, cb) {
 		connectionHelper.close();
-
 		cb();
 	},
 
-	async testConnection(connectionInfo, logger, cb, app) {
-		setDependencies(app);
+	async testConnection(connectionInfo, logger, cb) {
 		logInfo('Test connection', connectionInfo, logger);
 
-		const connection = await this.connect(connectionInfo);
-		const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
+		const connection = await this.connect({ connectionInfo, logger });
+		const instance = connectionHelper.createInstance({ connection, logger });
 
 		try {
 			await instance.getDatabases();
@@ -39,14 +36,12 @@ module.exports = {
 		}
 	},
 
-	async getDbCollectionsNames(connectionInfo, logger, cb, app) {
-		setDependencies(app);
-
+	async getDbCollectionsNames(connectionInfo, logger, cb) {
 		logInfo('Retrieving databases and tables information', connectionInfo, logger);
 
 		try {
-			const connection = await this.connect(connectionInfo);
-			const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
+			const connection = await this.connect({ connectionInfo, logger });
+			const instance = connectionHelper.createInstance({ connection, logger });
 			const { databaseList, isFullyUploaded } = await instance.getDatabases();
 			const dbsCollections = databaseList.map(async db => {
 				const dbCollections = await instance.getTables(db.Name);
@@ -79,8 +74,7 @@ module.exports = {
 		}
 	},
 
-	async getDbCollectionsData(data, logger, cb, app) {
-		setDependencies(app);
+	async getDbCollectionsData(data, logger, cb) {
 		logger.log('info', data, 'Retrieving schema', data.hiddenKeys);
 
 		const { collectionData } = data;
@@ -88,8 +82,8 @@ module.exports = {
 		const tables = collectionData.collections;
 
 		try {
-			const connection = await this.connect(data);
-			const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
+			const connection = await this.connect({ connectionInfo: data, logger });
+			const instance = connectionHelper.createInstance({ connection, logger });
 
 			const tablesDataPromise = databases.map(async dbName => {
 				const dbDescription = await instance.getDatabaseDescription(dbName);
@@ -139,10 +133,8 @@ module.exports = {
 		}
 	},
 
-	reFromFile: async (data, logger, callback, app) => {
+	reFromFile: async (data, logger, callback) => {
 		try {
-			setDependencies(app);
-			const _ = dependencies.lodash;
 			const input = await handleFileData(data.filePath);
 			const chars = new antlr4.InputStream(input);
 			const lexer = new HiveLexer.HiveLexer(chars);
@@ -158,7 +150,7 @@ module.exports = {
 
 			const commands = tree.accept(hqlToCollectionsGenerator);
 			const { result, info, relationships } = commandsService.convertCommandsToReDocs(
-				_.flatten(commands).filter(Boolean),
+				flatten(commands).filter(Boolean),
 				input,
 			);
 			callback(null, result, info, relationships, 'multipleSchema');

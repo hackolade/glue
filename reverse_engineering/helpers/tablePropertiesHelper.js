@@ -1,3 +1,5 @@
+const { get } = require('lodash');
+
 const mapSortColumns = (items = []) => {
 	return items.map(item => ({
 		name: item.Column,
@@ -9,15 +11,14 @@ const getSerDeLibrary = (data = {}) => {
 	return data.SerializationLibrary;
 };
 
-const mapSerDePaths = (_, data = {}) => {
-	return _.get(data, 'Parameters.paths', '').split(',');
+const mapSerDePaths = (data = {}) => {
+	return get(data, 'Parameters.paths', '').split(',');
 };
 
 const mapSerDeParameters = (parameters = {}) => {
 	return Object.entries(parameters).reduce((acc, [key, value]) => {
 		if (key !== 'paths') {
 			acc.push({ serDeKey: key, serDeValue: value });
-			return acc;
 		}
 		return acc;
 	}, []);
@@ -76,7 +77,7 @@ const mapColumns = ({ columns = [], logger = {} }) => {
 	return mapped;
 };
 
-const mapTableData = ({ tableData, _, logger }) => {
+const mapTableData = ({ tableData, logger }) => {
 	const partitionKeys = mapColumns({ columns: tableData.Table.PartitionKeys, logger });
 
 	return {
@@ -95,7 +96,7 @@ const mapTableData = ({ tableData, _, logger }) => {
 			inputFormatClassname: tableData.Table.StorageDescriptor?.InputFormat,
 			outputFormatClassname: tableData.Table.StorageDescriptor?.OutputFormat,
 			serDeLibrary: getSerDeLibrary(tableData.Table.StorageDescriptor?.SerdeInfo),
-			parameterPaths: mapSerDePaths(_, tableData.Table.StorageDescriptor?.SerdeInfo),
+			parameterPaths: mapSerDePaths(tableData.Table.StorageDescriptor?.SerdeInfo),
 			serDeParameters: mapSerDeParameters(tableData.Table.StorageDescriptor?.SerdeInfo?.Parameters),
 			classification: getClassification(tableData.Table.Parameters),
 		},

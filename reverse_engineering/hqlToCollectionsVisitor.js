@@ -1,3 +1,4 @@
+const { pickBy, isNumber, isBoolean, isEmpty, uniq } = require('lodash');
 const { HiveParserVisitor } = require('./parser/HiveParserVisitor');
 const { HiveParser } = require('./parser/HiveParser');
 const {
@@ -29,7 +30,6 @@ const {
 } = require('./commandsService');
 
 const schemaHelper = require('./schemaHelper');
-const { dependencies } = require('./appDependencies');
 
 const ALLOWED_COMMANDS = [
 	HiveParser.RULE_createTableStatement,
@@ -70,7 +70,6 @@ class Visitor extends HiveParserVisitor {
 	}
 
 	visitCreateTableStatement(ctx) {
-		const _ = dependencies.lodash;
 		const [tableName, tableLikeName] = this.visit(ctx.tableName());
 		const compositePartitionKey = this.visitWhenExists(ctx, 'tablePartition', []);
 		const { compositeClusteringKey, numBuckets, sortedByKey } = this.visitWhenExists(ctx, 'tableBuckets', {});
@@ -104,7 +103,7 @@ class Visitor extends HiveParserVisitor {
 					properties: { ...properties, ...convertKeysToProperties(compositePartitionKey) },
 				}),
 				tableLikeName: (tableLikeName || {}).table,
-				entityLevelData: _.pickBy(
+				entityLevelData: pickBy(
 					{
 						temporaryTable,
 						externalTable,
@@ -121,7 +120,7 @@ class Visitor extends HiveParserVisitor {
 						...storedAsTable,
 						...tableRowFormat,
 					},
-					prop => _.isNumber(prop) || _.isBoolean(prop) || !_.isEmpty(prop),
+					prop => isNumber(prop) || isBoolean(prop) || !isEmpty(prop),
 				),
 			},
 			...tableForeignKeys.map(fkData => ({
@@ -750,7 +749,7 @@ class Visitor extends HiveParserVisitor {
 
 		if (!complexTypes) {
 			return {
-				type: dependencies.lodash.uniq(types.map(schema => schema.type)),
+				type: uniq(types.map(schema => schema.type)),
 			};
 		}
 
@@ -1022,7 +1021,6 @@ class Visitor extends HiveParserVisitor {
 	}
 
 	visitCreateIndexStatement(ctx) {
-		const _ = dependencies.lodash;
 		const { name, database, table, columns, SecIndxHandler } = this.visit(ctx.createIndexMainStatement());
 		const SecIndxWithDeferredRebuild = Boolean(ctx.KW_WITH() && ctx.KW_DEFERRED() && ctx.KW_REBUILD());
 		const SecIndxProperties = this.visitWhenExists(ctx, 'tableProperties');
@@ -1035,7 +1033,7 @@ class Visitor extends HiveParserVisitor {
 			collectionName: table,
 			name,
 			columns,
-			data: _.pickBy(
+			data: pickBy(
 				{
 					SecIndxWithDeferredRebuild,
 					SecIndxHandler,
@@ -1043,7 +1041,7 @@ class Visitor extends HiveParserVisitor {
 					SecIndxTable,
 					SecIndxComments,
 				},
-				prop => _.isBoolean(prop) || !_.isEmpty(prop),
+				prop => isBoolean(prop) || !isEmpty(prop),
 			),
 		};
 	}
@@ -1100,7 +1098,7 @@ class Visitor extends HiveParserVisitor {
 	}
 
 	visitRpAssignList(ctx) {
-		return this.visit(ctx.rpAssign()).find(({ parallelism }) => !dependencies.lodash.isEmpty(parallelism));
+		return this.visit(ctx.rpAssign()).find(({ parallelism }) => !isEmpty(parallelism));
 	}
 
 	visitRpAssign(ctx) {
