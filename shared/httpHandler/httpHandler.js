@@ -70,11 +70,7 @@ class HttpHandler {
 
 		const resultResolver = async result => {
 			const fetchHeaders = result.headers;
-			const transformedHeaders = {};
-
-			for (const [headerKey, headerValue] of fetchHeaders.entries()) {
-				transformedHeaders[headerKey] = headerValue;
-			}
+			const transformedHeaders = Object.fromEntries(fetchHeaders.entries());
 
 			const hasReadableStream = result.body !== undefined;
 
