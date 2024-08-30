@@ -7,7 +7,6 @@
 const { net } = require('electron');
 const { isEmpty } = require('lodash');
 const { requestTimeout } = require('./requestTimeout');
-const { queryBuilder } = require('./queryBuilder');
 
 /**
  * @class
@@ -45,7 +44,7 @@ class HttpHandler {
 		let { path } = request;
 
 		if (!isEmpty(query) && typeof query === 'object') {
-			path += `?${queryBuilder({ query })}`;
+			path += `?${new URLSearchParams(query).toString()}`;
 		}
 
 		const portParam = port ? `:${port}` : '';
