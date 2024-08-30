@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const { partition } = require('lodash');
 const {
 	buildStatement,
 	getName,
@@ -105,7 +105,7 @@ const getSortedKeys = (sortedKeys, deactivatedColumnNames, isParentItemActivated
 	if (!Array.isArray(sortedKeys) || !sortedKeys.length) {
 		return '';
 	}
-	const [activatedKeys, deactivatedKeys] = _.partition(
+	const [activatedKeys, deactivatedKeys] = partition(
 		sortedKeys,
 		keyData => !deactivatedColumnNames.has(keyData.name),
 	);
@@ -129,7 +129,7 @@ const getPartitionKeyStatement = (keys, isParentActivated) => {
 		return '';
 	}
 
-	const [activatedKeys, deactivatedKeys] = _.partition(keys, key => key.isActivated);
+	const [activatedKeys, deactivatedKeys] = partition(keys, key => key.isActivated);
 	if (!isParentActivated || deactivatedKeys.length === 0) {
 		return { isAllKeysDeactivated: false, keysString: getKeysStatement(keys) };
 	}

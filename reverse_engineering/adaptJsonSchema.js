@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const { uniq } = require('lodash');
 const mapJsonSchema = require('./helpers/mapJsonSchema');
 
 const adaptJsonSchema = (data, logger, callback) => {
@@ -36,7 +36,7 @@ const getArraySubtypeByChildren = arraySchema => {
 		return;
 	}
 
-	if (Array.isArray(arraySchema.items) && _.uniq(arraySchema.items.map(item => item.type)).length > 1) {
+	if (Array.isArray(arraySchema.items) && uniq(arraySchema.items.map(item => item.type)).length > 1) {
 		return subtype('union');
 	}
 

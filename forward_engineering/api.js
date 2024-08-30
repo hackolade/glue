@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const { get } = require('lodash');
 const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
 const { getDatabaseStatement } = require('./helpers/databaseHelper');
 const { getTableStatement } = require('./helpers/tableHelper');
@@ -24,7 +24,7 @@ module.exports = {
 
 			if (data.options.targetScriptOptions && data.options.targetScriptOptions.keyword === 'hiveQl') {
 				const needMinify = (
-					_.get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {}
+					get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {}
 				).value;
 
 				return callback(
@@ -66,7 +66,7 @@ module.exports = {
 			const internalDefinitions = parseEntities(data.entities, data.internalDefinitions);
 			if (data.options.targetScriptOptions && data.options.targetScriptOptions.keyword === 'hiveQl') {
 				const needMinify = (
-					_.get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {}
+					get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {}
 				).value;
 
 				const foreignKeyHashTable = foreignKeyHelper.getForeignKeyHashTable(
@@ -181,7 +181,7 @@ const buildAWSCLIScript = (containerData, tableSchema) => {
 const buildAWSCLIModelScript = (containerData, tablesSchemas = {}) => {
 	const dbStatement = getGlueDatabaseCreateStatement(containerData[0]);
 	const tablesStatements = Object.entries(tablesSchemas).map(([key, value]) => {
-		return getGlueTableCreateStatement(value, _.get(containerData[0], 'name', ''));
+		return getGlueTableCreateStatement(value, get(containerData[0], 'name', ''));
 	});
 	return composeCLIStatements([dbStatement, ...tablesStatements]);
 };

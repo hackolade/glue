@@ -1,11 +1,11 @@
-const _ = require('lodash');
+const { isEmpty, isPlainObject, has, partial } = require('lodash');
 
 const mapJsonSchema = (jsonSchema, parentJsonSchema, callback, key) => {
 	const mapProperties = (properties, mapper) =>
 		Object.keys(properties).reduce((newProperties, propertyName) => {
 			const schema = mapper(properties[propertyName], propertyName);
 
-			if (_.isEmpty(schema)) {
+			if (isEmpty(schema)) {
 				return newProperties;
 			}
 
@@ -13,8 +13,8 @@ const mapJsonSchema = (jsonSchema, parentJsonSchema, callback, key) => {
 		}, {});
 	const mapItems = (items, mapper) => {
 		if (Array.isArray(items)) {
-			return items.map((jsonSchema, i) => mapper(jsonSchema, i)).filter(item => !_.isEmpty(item));
-		} else if (_.isPlainObject(items)) {
+			return items.map((jsonSchema, i) => mapper(jsonSchema, i)).filter(item => !isEmpty(item));
+		} else if (isPlainObject(items)) {
 			return mapper(items, 0);
 		} else {
 			return items;
@@ -35,16 +35,16 @@ const mapJsonSchema = (jsonSchema, parentJsonSchema, callback, key) => {
 
 		const subSchema = subSchemasUpdated[0];
 
-		if (!_.has(subSchema, 'properties')) {
+		if (!has(subSchema, 'properties')) {
 			return subSchemasUpdated;
 		}
 
-		if (!_.has(parentJsonSchema, 'properties')) {
+		if (!has(parentJsonSchema, 'properties')) {
 			parentJsonSchema.properties = {};
 		}
 
 		Object.keys(subSchema.properties).forEach(key => {
-			if (_.has(parentJsonSchema, 'properties.' + key)) {
+			if (has(parentJsonSchema, 'properties.' + key)) {
 				return;
 			}
 
@@ -61,7 +61,7 @@ const mapJsonSchema = (jsonSchema, parentJsonSchema, callback, key) => {
 
 			const schema = mapper(jsonSchema[propertyName], propertyName);
 
-			if (_.isEmpty(schema)) {
+			if (isEmpty(schema)) {
 				const copySchema = Object.assign({}, jsonSchema);
 
 				delete copySchema[propertyName];
@@ -74,18 +74,30 @@ const mapJsonSchema = (jsonSchema, parentJsonSchema, callback, key) => {
 			});
 		}, jsonSchema);
 	};
-	if (!_.isPlainObject(jsonSchema)) {
+	if (!isPlainObject(jsonSchema)) {
 		return jsonSchema;
 	}
 	const copyJsonSchema = Object.assign({}, jsonSchema);
-	const mapper = _.partial(mapJsonSchema, _, copyJsonSchema, callback);
+	const mapper = partial(mapJsonSchema, partial.placeholder, copyJsonSchema, callback);
 	const propertiesLike = ['properties', 'definitions', 'patternProperties'];
 	const itemsLike = ['items', 'not'];
 	const choices = ['oneOf', 'allOf', 'anyOf'];
 
-	const jsonSchemaWithNewProperties = applyTo(propertiesLike, copyJsonSchema, _.partial(mapProperties, _, mapper));
-	const updatedItems = applyTo(itemsLike, jsonSchemaWithNewProperties, _.partial(mapItems, _, mapper));
-	const newJsonSchema = applyTo(choices, updatedItems, _.partial(mapChoices, updatedItems, _, mapper));
+	const jsonSchemaWithNewProperties = applyTo(
+		propertiesLike,
+		copyJsonSchema,
+		partial(mapProperties, partial.placeholder, mapper),
+	);
+	const updatedItems = applyTo(
+		itemsLike,
+		jsonSchemaWithNewProperties,
+		partial(mapItems, partial.placeholder, mapper),
+	);
+	const newJsonSchema = applyTo(
+		choices,
+		updatedItems,
+		partial(mapChoices, updatedItems, partial.placeholder, mapper),
+	);
 
 	return callback(newJsonSchema, parentJsonSchema, key);
 };

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const { get } = require('lodash');
 
 const mapSortColumns = (items = []) => {
 	return items.map(item => ({
@@ -11,8 +11,8 @@ const getSerDeLibrary = (data = {}) => {
 	return data.SerializationLibrary;
 };
 
-const mapSerDePaths = (_, data = {}) => {
-	return _.get(data, 'Parameters.paths', '').split(',');
+const mapSerDePaths = (data = {}) => {
+	return get(data, 'Parameters.paths', '').split(',');
 };
 
 const mapSerDeParameters = (parameters = {}) => {
@@ -96,7 +96,7 @@ const mapTableData = ({ tableData, logger }) => {
 			inputFormatClassname: tableData.Table.StorageDescriptor?.InputFormat,
 			outputFormatClassname: tableData.Table.StorageDescriptor?.OutputFormat,
 			serDeLibrary: getSerDeLibrary(tableData.Table.StorageDescriptor?.SerdeInfo),
-			parameterPaths: mapSerDePaths(_, tableData.Table.StorageDescriptor?.SerdeInfo),
+			parameterPaths: mapSerDePaths(tableData.Table.StorageDescriptor?.SerdeInfo),
 			serDeParameters: mapSerDeParameters(tableData.Table.StorageDescriptor?.SerdeInfo?.Parameters),
 			classification: getClassification(tableData.Table.Parameters),
 		},

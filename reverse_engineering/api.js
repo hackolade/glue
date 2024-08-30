@@ -1,6 +1,6 @@
 const fs = require('fs');
 const antlr4 = require('antlr4');
-const _ = require('lodash');
+const { flatten } = require('lodash');
 const logHelper = require('./logHelper');
 const HiveLexer = require('./parser/HiveLexer.js');
 const HiveParser = require('./parser/HiveParser.js');
@@ -150,7 +150,7 @@ module.exports = {
 
 			const commands = tree.accept(hqlToCollectionsGenerator);
 			const { result, info, relationships } = commandsService.convertCommandsToReDocs(
-				_.flatten(commands).filter(Boolean),
+				flatten(commands).filter(Boolean),
 				input,
 			);
 			callback(null, result, info, relationships, 'multipleSchema');

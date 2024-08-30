@@ -1,5 +1,5 @@
 'use strict';
-const _ = require('lodash');
+const { partition, findLastIndex } = require('lodash');
 
 const buildStatement = (mainStatement, isActivated) => {
 	let composeStatements = (...statements) => {
@@ -83,7 +83,7 @@ const commentDeactivatedStatements = (statement, isActivated = true) => {
 };
 
 const commentDeactivatedInlineKeys = (keys, deactivatedKeyNames) => {
-	const [activatedKeys, deactivatedKeys] = _.partition(
+	const [activatedKeys, deactivatedKeys] = partition(
 		keys,
 		key => !(deactivatedKeyNames.has(key) || deactivatedKeyNames.has(key.slice(1, -1))),
 	);
@@ -113,7 +113,7 @@ const removeRedundantTrailingCommaFromStatement = statement => {
 	if (splitedStatement.length < 4 || !splitedStatement[splitedStatement.length - 2].trim().startsWith('--')) {
 		return statement;
 	}
-	const lineWithTrailingCommaIndex = _.findLastIndex(splitedStatement, line => {
+	const lineWithTrailingCommaIndex = findLastIndex(splitedStatement, line => {
 		if (line.trim() !== ');' && !line.trim().startsWith('--')) {
 			return true;
 		}

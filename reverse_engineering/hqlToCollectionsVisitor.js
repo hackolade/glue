@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const { pickBy, isNumber, isBoolean, isEmpty, uniq } = require('lodash');
 const { HiveParserVisitor } = require('./parser/HiveParserVisitor');
 const { HiveParser } = require('./parser/HiveParser');
 const {
@@ -103,7 +103,7 @@ class Visitor extends HiveParserVisitor {
 					properties: { ...properties, ...convertKeysToProperties(compositePartitionKey) },
 				}),
 				tableLikeName: (tableLikeName || {}).table,
-				entityLevelData: _.pickBy(
+				entityLevelData: pickBy(
 					{
 						temporaryTable,
 						externalTable,
@@ -120,7 +120,7 @@ class Visitor extends HiveParserVisitor {
 						...storedAsTable,
 						...tableRowFormat,
 					},
-					prop => _.isNumber(prop) || _.isBoolean(prop) || !_.isEmpty(prop),
+					prop => isNumber(prop) || isBoolean(prop) || !isEmpty(prop),
 				),
 			},
 			...tableForeignKeys.map(fkData => ({
@@ -749,7 +749,7 @@ class Visitor extends HiveParserVisitor {
 
 		if (!complexTypes) {
 			return {
-				type: _.uniq(types.map(schema => schema.type)),
+				type: uniq(types.map(schema => schema.type)),
 			};
 		}
 
@@ -1033,7 +1033,7 @@ class Visitor extends HiveParserVisitor {
 			collectionName: table,
 			name,
 			columns,
-			data: _.pickBy(
+			data: pickBy(
 				{
 					SecIndxWithDeferredRebuild,
 					SecIndxHandler,
@@ -1041,7 +1041,7 @@ class Visitor extends HiveParserVisitor {
 					SecIndxTable,
 					SecIndxComments,
 				},
-				prop => _.isBoolean(prop) || !_.isEmpty(prop),
+				prop => isBoolean(prop) || !isEmpty(prop),
 			),
 		};
 	}
@@ -1098,7 +1098,7 @@ class Visitor extends HiveParserVisitor {
 	}
 
 	visitRpAssignList(ctx) {
-		return this.visit(ctx.rpAssign()).find(({ parallelism }) => !_.isEmpty(parallelism));
+		return this.visit(ctx.rpAssign()).find(({ parallelism }) => !isEmpty(parallelism));
 	}
 
 	visitRpAssign(ctx) {
