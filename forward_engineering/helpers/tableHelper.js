@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const {
 	buildStatement,
 	getName,
@@ -12,7 +13,6 @@ const {
 } = require('./generalHelper');
 const { getColumnsStatement, getColumnStatement, getColumns } = require('./columnHelper');
 const keyHelper = require('./keyHelper');
-const { dependencies } = require('../appDependencies');
 
 const getCreateStatement = ({
 	dbName,
@@ -105,7 +105,7 @@ const getSortedKeys = (sortedKeys, deactivatedColumnNames, isParentItemActivated
 	if (!Array.isArray(sortedKeys) || !sortedKeys.length) {
 		return '';
 	}
-	const [activatedKeys, deactivatedKeys] = dependencies.lodash.partition(
+	const [activatedKeys, deactivatedKeys] = _.partition(
 		sortedKeys,
 		keyData => !deactivatedColumnNames.has(keyData.name),
 	);
@@ -129,7 +129,7 @@ const getPartitionKeyStatement = (keys, isParentActivated) => {
 		return '';
 	}
 
-	const [activatedKeys, deactivatedKeys] = dependencies.lodash.partition(keys, key => key.isActivated);
+	const [activatedKeys, deactivatedKeys] = _.partition(keys, key => key.isActivated);
 	if (!isParentActivated || deactivatedKeys.length === 0) {
 		return { isAllKeysDeactivated: false, keysString: getKeysStatement(keys) };
 	}

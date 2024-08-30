@@ -1,4 +1,6 @@
-const mapJsonSchema = _ => (jsonSchema, parentJsonSchema, callback, key) => {
+const _ = require('lodash');
+
+const mapJsonSchema = (jsonSchema, parentJsonSchema, callback, key) => {
 	const mapProperties = (properties, mapper) =>
 		Object.keys(properties).reduce((newProperties, propertyName) => {
 			const schema = mapper(properties[propertyName], propertyName);
@@ -76,7 +78,7 @@ const mapJsonSchema = _ => (jsonSchema, parentJsonSchema, callback, key) => {
 		return jsonSchema;
 	}
 	const copyJsonSchema = Object.assign({}, jsonSchema);
-	const mapper = _.partial(mapJsonSchema(_), _, copyJsonSchema, callback);
+	const mapper = _.partial(mapJsonSchema, _, copyJsonSchema, callback);
 	const propertiesLike = ['properties', 'definitions', 'patternProperties'];
 	const itemsLike = ['items', 'not'];
 	const choices = ['oneOf', 'allOf', 'anyOf'];

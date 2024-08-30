@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
 const { getDatabaseStatement } = require('./helpers/databaseHelper');
 const { getTableStatement } = require('./helpers/tableHelper');
@@ -9,12 +10,10 @@ const { getGlueDatabaseCreateStatement } = require('./helpers/awsCliScriptHelper
 const { getGlueTableCreateStatement } = require('./helpers/awsCliScriptHelpers/glueTableHelper');
 const { getApiStatements } = require('./helpers/awsCliScriptHelpers/applyToInstanceHelper');
 const sqlFormatter = require('./custom_modules/sql-formatter');
-const { setDependencies, dependencies } = require('./appDependencies');
 
 module.exports = {
-	generateScript(data, logger, callback, app) {
+	generateScript(data, logger, callback) {
 		try {
-			setDependencies(app);
 			const jsonSchema = JSON.parse(data.jsonSchema);
 			const modelDefinitions = JSON.parse(data.modelDefinitions);
 			const internalDefinitions = JSON.parse(data.internalDefinitions);
@@ -24,9 +23,7 @@ module.exports = {
 
 			if (data.options.targetScriptOptions && data.options.targetScriptOptions.keyword === 'hiveQl') {
 				const needMinify = (
-					dependencies.lodash
-						.get(data, 'options.additionalOptions', [])
-						.find(option => option.id === 'minify') || {}
+					_.get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {}
 				).value;
 
 				return callback(
@@ -58,9 +55,8 @@ module.exports = {
 		}
 	},
 
-	generateContainerScript(data, logger, callback, app) {
+	generateContainerScript(data, logger, callback) {
 		try {
-			setDependencies(app);
 			const containerData = data.containerData;
 			const modelDefinitions = JSON.parse(data.modelDefinitions);
 			const externalDefinitions = JSON.parse(data.externalDefinitions);
@@ -69,9 +65,7 @@ module.exports = {
 			const internalDefinitions = parseEntities(data.entities, data.internalDefinitions);
 			if (data.options.targetScriptOptions && data.options.targetScriptOptions.keyword === 'hiveQl') {
 				const needMinify = (
-					dependencies.lodash
-						.get(data, 'options.additionalOptions', [])
-						.find(option => option.id === 'minify') || {}
+					_.get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {}
 				).value;
 
 				const foreignKeyHashTable = foreignKeyHelper.getForeignKeyHashTable(
@@ -125,7 +119,6 @@ module.exports = {
 	},
 
 	async applyToInstance(data, logger, callback, app) {
-		setDependencies(app);
 		if (!data.script) {
 			return callback({ message: 'Empty script' });
 		}
@@ -133,7 +126,7 @@ module.exports = {
 		logger.clear();
 		logger.log('info', data, data.hiddenKeys);
 
-		const glueInstance = getGlueInstance(data, app);
+		const glueInstance = getGlueInstance(data);
 
 		try {
 			const { db, table } = getApiStatements(data.script);
@@ -163,10 +156,9 @@ module.exports = {
 	},
 
 	async testConnection(connectionInfo, logger, callback, app) {
-		setDependencies(app);
 		logger.log('info', connectionInfo, 'Test connection', connectionInfo.hiddenKeys);
 
-		const glueInstance = getGlueInstance(connectionInfo, app);
+		const glueInstance = getGlueInstance(connectionInfo);
 
 		try {
 			const command = new GetDatabasesCommand();
@@ -188,12 +180,12 @@ const buildAWSCLIScript = (containerData, tableSchema) => {
 const buildAWSCLIModelScript = (containerData, tablesSchemas = {}) => {
 	const dbStatement = getGlueDatabaseCreateStatement(containerData[0]);
 	const tablesStatements = Object.entries(tablesSchemas).map(([key, value]) => {
-		return getGlueTableCreateStatement(value, dependencies.lodash.get(containerData[0], 'name', ''));
+		return getGlueTableCreateStatement(value, _.get(containerData[0], 'name', ''));
 	});
 	return composeCLIStatements([dbStatement, ...tablesStatements]);
 };
 
-const getGlueInstance = (connectionInfo, app) => {
+const getGlueInstance = connectionInfo => {
 	const { accessKeyId, secretAccessKey, region, sessionToken } = connectionInfo;
 	return new GlueClient({
 		region,

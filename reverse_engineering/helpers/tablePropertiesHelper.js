@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const mapSortColumns = (items = []) => {
 	return items.map(item => ({
 		name: item.Column,
@@ -17,7 +19,6 @@ const mapSerDeParameters = (parameters = {}) => {
 	return Object.entries(parameters).reduce((acc, [key, value]) => {
 		if (key !== 'paths') {
 			acc.push({ serDeKey: key, serDeValue: value });
-			return acc;
 		}
 		return acc;
 	}, []);
@@ -76,7 +77,7 @@ const mapColumns = ({ columns = [], logger = {} }) => {
 	return mapped;
 };
 
-const mapTableData = ({ tableData, _, logger }) => {
+const mapTableData = ({ tableData, logger }) => {
 	const partitionKeys = mapColumns({ columns: tableData.Table.PartitionKeys, logger });
 
 	return {

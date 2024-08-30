@@ -50,7 +50,7 @@ const close = () => {
 	}
 };
 
-const createInstance = ({ connection, _ = {}, logger = {} }) => {
+const createInstance = ({ connection, logger = {} }) => {
 	const getDatabases = async () => {
 		const command = new GetDatabasesCommand({ MaxResults: MAX_RESULTS, NextToken: databaseLoadContinuationToken });
 		const dbsData = await connection.send(command);
@@ -91,7 +91,7 @@ const createInstance = ({ connection, _ = {}, logger = {} }) => {
 
 		const rawTableData = await connection.send(command);
 
-		return mapTableData({ tableData: rawTableData, _, logger });
+		return mapTableData({ tableData: rawTableData, logger });
 	};
 
 	return {
