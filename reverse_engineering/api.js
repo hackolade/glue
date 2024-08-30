@@ -13,21 +13,19 @@ const connectionHelper = require('./helpers/connectionHelper');
 const { setDependencies, dependencies } = require('./appDependencies');
 
 module.exports = {
-	async connect(connectionInfo) {
-		return connectionHelper.connect(connectionInfo);
+	async connect({ connectionInfo, logger }) {
+		return connectionHelper.connect({ connectionInfo, logger });
 	},
 
 	disconnect(connectionInfo, logger, cb, app) {
 		connectionHelper.close();
-
 		cb();
 	},
 
 	async testConnection(connectionInfo, logger, cb, app) {
-		setDependencies(app);
 		logInfo('Test connection', connectionInfo, logger);
 
-		const connection = await this.connect(connectionInfo);
+		const connection = await this.connect({ connectionInfo, logger });
 		const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
 
 		try {
@@ -45,7 +43,7 @@ module.exports = {
 		logInfo('Retrieving databases and tables information', connectionInfo, logger);
 
 		try {
-			const connection = await this.connect(connectionInfo);
+			const connection = await this.connect({ connectionInfo, logger });
 			const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
 			const { databaseList, isFullyUploaded } = await instance.getDatabases();
 			const dbsCollections = databaseList.map(async db => {
@@ -88,7 +86,7 @@ module.exports = {
 		const tables = collectionData.collections;
 
 		try {
-			const connection = await this.connect(data);
+			const connection = await this.connect({ connectionInfo: data, logger });
 			const instance = connectionHelper.createInstance({ connection, _: dependencies.lodash, logger });
 
 			const tablesDataPromise = databases.map(async dbName => {
@@ -177,7 +175,7 @@ const handleFileData = filePath => {
 	return new Promise((resolve, reject) => {
 		fs.readFile(filePath, 'utf-8', (err, content) => {
 			if (err) {
-				reject(err);
+				reject(new Error(`handle file data error: ${err}`));
 			} else {
 				resolve(content);
 			}

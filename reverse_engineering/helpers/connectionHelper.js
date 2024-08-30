@@ -8,64 +8,17 @@ const {
 const fs = require('fs');
 const https = require('https');
 const { mapTableData } = require('./tablePropertiesHelper');
-const { HttpHandler } = require('../httpHandler/HttpHandler');
+const { HttpHandler } = require('../../shared/httpHandler/httpHandler');
 
 let connection;
 let databaseLoadContinuationToken;
 
 const MAX_RESULTS = 100;
 
-const readCertificateFile = path => {
-	if (!path) {
-		return Promise.resolve('');
-	}
+const createConnection = async ({ connectionInfo, logger }) => {
+	const { accessKeyId, secretAccessKey, region, sessionToken, queryRequestTimeout } = connectionInfo;
 
-	return new Promise(resolve => {
-		fs.readFile(path, 'utf8', (err, data) => {
-			if (err) {
-				resolve('');
-			}
-			resolve(data);
-		});
-	});
-};
-
-const getSslOptions = async connectionInfo => {
-	switch (connectionInfo.sslType) {
-		case 'Server validation': {
-			const certAuthority = await readCertificateFile(connectionInfo.certAuthorityPath);
-			return {
-				ssl: true,
-				ca: [certAuthority],
-			};
-		}
-		case 'Server and client validation': {
-			const certAuthority = await readCertificateFile(connectionInfo.certAuthorityPath);
-			const key = await readCertificateFile(connectionInfo.clientPrivateKey);
-			const cert = await readCertificateFile(connectionInfo.clientCert);
-			return {
-				ssl: true,
-				ca: [certAuthority],
-				key: [key],
-				cert: [cert],
-				passphrase: connectionInfo.clientKeyPassword,
-			};
-		}
-		default:
-			return { ssl: false };
-	}
-};
-
-const createConnection = async connectionInfo => {
-	const { accessKeyId, secretAccessKey, region, sessionToken } = connectionInfo;
-	const sslOptions = await getSslOptions(connectionInfo);
-
-	const agent = new https.Agent({
-		rejectUnauthorized: true,
-		...sslOptions,
-	});
-
-	const httpHandler = new HttpHandler(agent);
+	const httpHandler = new HttpHandler({ logger, requestTimeout: queryRequestTimeout });
 
 	return new GlueClient({
 		region,
@@ -74,15 +27,15 @@ const createConnection = async connectionInfo => {
 			secretAccessKey,
 			sessionToken,
 		},
-		requestHandler: httpHandler.handler,
+		requestHandler: httpHandler,
 	});
 };
-const connect = async connectionInfo => {
+const connect = async ({ connectionInfo, logger }) => {
 	if (connection) {
 		return connection;
 	}
 
-	connection = await createConnection(connectionInfo);
+	connection = await createConnection({ connectionInfo, logger });
 
 	return connection;
 };
@@ -106,7 +59,7 @@ const createInstance = ({ connection, _ = {}, logger = {} }) => {
 
 		return {
 			databaseList: dbsData.DatabaseList,
-			isFullyUploaded: !Boolean(dbsData.NextToken),
+			isFullyUploaded: !dbsData.NextToken,
 		};
 	};
 
