@@ -1,6 +1,6 @@
 {
     "name": "Glue",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "author": "hackolade",
     "engines": {
         "hackolade": "6.9.11",
@@ -65,7 +65,7 @@
         "prettier": "3.2.5",
         "simple-git-hooks": "2.11.1"
     },
-	"peerDependencies": {
-		"electron": "^31"
-	}
+    "peerDependencies": {
+        "electron": "^31"
+    }
 }
