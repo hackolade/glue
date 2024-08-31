@@ -1,6 +1,6 @@
 {
     "name": "Glue",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "author": "hackolade",
     "engines": {
         "hackolade": "6.9.11",
@@ -35,7 +35,6 @@
     "description": "Hackolade plugin for AWS Glue Data Catalog",
     "dependencies": {
         "@aws-sdk/client-glue": "3.613.0",
-        "@aws-sdk/fetch-http-handler": "3.374.0",
         "antlr4": "4.8.0",
         "lodash": "4.17.21"
     },
@@ -65,6 +64,9 @@
         "lint-staged": "14.0.1",
         "prettier": "3.2.5",
         "simple-git-hooks": "2.11.1"
+    },
+    "peerDependencies": {
+        "electron": "^31"
     },
     "release": true
 }
