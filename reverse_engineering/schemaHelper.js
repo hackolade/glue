@@ -70,7 +70,7 @@ const parseStruct = (splittedContent, sample = {}) => {
 		(schema, keyItem) => {
 			const keyName = getKeyName(keyItem).trim();
 			const keyContent = keyItem.slice(keyName.length + 1).trim();
-			const childSchema = getJsonSchema(keyContent, sample[keyName]);
+			const childSchema = getJsonSchema({ type: keyContent, sample: sample[keyName] });
 
 			return setProperty(keyName, childSchema, schema);
 		},
@@ -124,8 +124,8 @@ const getMapSubtype = type => {
 
 const parseMap = ([keySubtype, subtype], sample = {}) => {
 	const childName = Object.keys(sample)[0] || 'New column';
-	const subtypeSchema = getJsonSchema(subtype, sample[childName]);
-	const keySubtypeSchema = getJsonSchema(keySubtype);
+	const subtypeSchema = getJsonSchema({ type: subtype, sample: sample[childName] });
+	const keySubtypeSchema = getJsonSchema({ type: keySubtype });
 
 	return setProperty(
 		childName,
@@ -166,7 +166,7 @@ const getSubtypeByType = (type, parentType) => {
 };
 
 const parseArray = ([content], sample = []) => {
-	const items = getJsonSchema(content, sample[0]);
+	const items = getJsonSchema({ type: content, sample: sample[0] });
 
 	return setProperty('New column', items, {
 		type: 'array',
@@ -176,7 +176,7 @@ const parseArray = ([content], sample = []) => {
 };
 
 const parseSet = ([content], sample = []) => {
-	const items = getJsonSchema(content, sample[0]);
+	const items = getJsonSchema({ type: content, sample: sample[0] });
 
 	return setProperty('New column', items, {
 		type: 'set',
@@ -238,7 +238,7 @@ const parsePrimitive = ([type]) => {
 
 const parseUnion = (types, sample) => {
 	const isComplex = type => ['struct', 'map', 'array'].indexOf(type) !== -1;
-	const jsonSchemas = types.map(getJsonSchema);
+	const jsonSchemas = types.map(type => getJsonSchema({ type }));
 	const complexTypes = jsonSchemas.some(schema => isComplex(schema.type));
 
 	if (!complexTypes) {
@@ -271,11 +271,14 @@ const getParserByType = type => {
 	}
 };
 
-const getJsonSchema = (str, sample) => {
+const getJsonSchema = ({ type: str, sample, comments }) => {
 	const type = getType(str);
 	const content = splitContent(cleanContent(str));
 
-	return getParserByType(type)(content, sample);
+	return {
+		...getParserByType(type)(content, sample),
+		comments,
+	};
 };
 
 const getOneOf = (subSchemas, columnName) => {

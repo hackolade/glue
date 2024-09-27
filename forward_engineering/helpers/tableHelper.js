@@ -257,7 +257,7 @@ const getTableStatement = (containerData, entityData, jsonSchema, definitions, f
 		),
 		primaryKeyStatement: getPrimaryKeyStatement(keyNames.primaryKeys, deactivatedColumnNames, isTableActivated),
 		foreignKeyStatement: foreignKeyStatement,
-		comment: tableData.comments,
+		comment: tableData.description,
 		partitionedByKeys: getPartitionKeyStatement(
 			getPartitionsKeys(columns, keyNames.compositePartitionKey),
 			isTableActivated,
