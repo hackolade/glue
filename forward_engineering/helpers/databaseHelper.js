@@ -13,7 +13,7 @@ const getDatabaseStatement = containerData => {
 
 	return getCreateStatement({
 		name: replaceSpaceWithUnderscore(getName(tab)),
-		comment: tab.comments,
+		comment: tab.description,
 		isActivated: tab.isActivated,
 	});
 };

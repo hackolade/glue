@@ -63,11 +63,11 @@ const getNumBuckets = (numBuckets = 0) => {
 const mapColumns = ({ columns = [], logger = {} }) => {
 	let hasErrors = false;
 
-	const mapped = columns.map(({ Type, Name }) => {
+	const mapped = columns.map(({ Type, Name, Comment }) => {
 		if (!Type || !Name) {
 			hasErrors = true;
 		}
-		return { name: Name, type: Type };
+		return { name: Name, type: Type, comments: Comment };
 	});
 
 	if (hasErrors) {

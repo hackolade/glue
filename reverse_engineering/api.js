@@ -195,7 +195,7 @@ const getColumnsSchema = ({ columns, logger }) => {
 			logger.log('info', item, 'Column Type is missing, fallback to string');
 		}
 		const sanitizedTypeString = item.type?.replace(/\s/g, '') || 'string';
-		const columnSchema = schemaHelper.getJsonSchema(sanitizedTypeString);
+		const columnSchema = schemaHelper.getJsonSchema({ type: sanitizedTypeString, comments: item.comments });
 		schemaHelper.setProperty(item.name, columnSchema, acc);
 		return acc;
 	}, {});
