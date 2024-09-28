@@ -11,7 +11,8 @@
 		]
 	},
 	{
-		"lowerTab": "Authentication",
+		"tab": "Authentication",
+		"helpUrl": "https://hackolade.com/help/ConnecttoanAWSGlueDataCatalog.html",
 		"structure": [
 			{
 				"inputLabel": "Access Key ID",
