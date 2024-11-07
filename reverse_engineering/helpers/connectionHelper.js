@@ -5,20 +5,18 @@ const {
 	GetDatabaseCommand,
 	GetDatabasesCommand,
 } = require('@aws-sdk/client-glue');
-const fs = require('fs');
-const https = require('https');
+const { hckFetchAwsSdkHttpHandler } = require('@hackolade/fetch');
 const { mapTableData } = require('./tablePropertiesHelper');
-const { HttpHandler } = require('../../shared/httpHandler/httpHandler');
 
 let connection;
 let databaseLoadContinuationToken;
 
 const MAX_RESULTS = 100;
 
-const createConnection = async ({ connectionInfo, logger }) => {
+const createConnection = async ({ connectionInfo }) => {
 	const { accessKeyId, secretAccessKey, region, sessionToken, queryRequestTimeout } = connectionInfo;
 
-	const httpHandler = new HttpHandler({ logger, requestTimeout: queryRequestTimeout });
+	const httpHandler = hckFetchAwsSdkHttpHandler({ requestTimeout: queryRequestTimeout });
 
 	return new GlueClient({
 		region,

@@ -2,6 +2,7 @@
 
 const { get } = require('lodash');
 const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
+const { hckFetchAwsSdkHttpHandler } = require('@hackolade/fetch');
 const { getDatabaseStatement } = require('./helpers/databaseHelper');
 const { getTableStatement } = require('./helpers/tableHelper');
 const { getIndexes } = require('./helpers/indexHelper');
@@ -10,7 +11,6 @@ const { getGlueDatabaseCreateStatement } = require('./helpers/awsCliScriptHelper
 const { getGlueTableCreateStatement } = require('./helpers/awsCliScriptHelpers/glueTableHelper');
 const { getApiStatements } = require('./helpers/awsCliScriptHelpers/applyToInstanceHelper');
 const sqlFormatter = require('./custom_modules/sql-formatter');
-const { HttpHandler } = require('../shared/httpHandler/httpHandler');
 
 module.exports = {
 	generateScript(data, logger, callback) {
@@ -186,9 +186,9 @@ const buildAWSCLIModelScript = (containerData, tablesSchemas = {}) => {
 	return composeCLIStatements([dbStatement, ...tablesStatements]);
 };
 
-const getGlueInstance = ({ connectionInfo, logger }) => {
+const getGlueInstance = ({ connectionInfo }) => {
 	const { accessKeyId, secretAccessKey, region, sessionToken, queryRequestTimeout } = connectionInfo;
-	const httpHandler = new HttpHandler({ logger, requestTimeout: queryRequestTimeout });
+	const httpHandler = hckFetchAwsSdkHttpHandler({ requestTimeout: queryRequestTimeout });
 
 	return new GlueClient({
 		region,
