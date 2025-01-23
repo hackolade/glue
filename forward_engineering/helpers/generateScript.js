@@ -15,8 +15,7 @@ function generateScript(data, logger, callback) {
 		const entityData = data.entityData;
 
 		if (data.options.targetScriptOptions && data.options.targetScriptOptions.keyword === 'hiveQl') {
-			const needMinify = (get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {})
-				.value;
+			const needMinify = get(data, 'options.additionalOptions', []).find(option => option.id === 'minify')?.value;
 
 			return callback(
 				null,
