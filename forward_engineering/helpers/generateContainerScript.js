@@ -15,8 +15,7 @@ function generateContainerScript(data, logger, callback) {
 		const jsonSchema = parseEntities(data.entities, data.jsonSchema);
 		const internalDefinitions = parseEntities(data.entities, data.internalDefinitions);
 		if (data.options.targetScriptOptions && data.options.targetScriptOptions.keyword === 'hiveQl') {
-			const needMinify = (get(data, 'options.additionalOptions', []).find(option => option.id === 'minify') || {})
-				.value;
+			const needMinify = get(data, 'options.additionalOptions', []).find(option => option.id === 'minify')?.value;
 
 			const foreignKeyHashTable = foreignKeyHelper.getForeignKeyHashTable(
 				data.relationships,
