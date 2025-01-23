@@ -26,7 +26,7 @@ function generateContainerScript(data, logger, callback) {
 				internalDefinitions,
 				[modelDefinitions, externalDefinitions],
 				[modelDefinitions, externalDefinitions],
-				containerData[0] && containerData[0].isActivated,
+				containerData[0]?.isActivated,
 			);
 
 			const entities = data.entities.reduce((result, entityId) => {
@@ -71,7 +71,10 @@ function generateContainerScript(data, logger, callback) {
 const parseEntities = (entities, serializedItems) => {
 	return entities.reduce((result, entityId) => {
 		try {
-			return Object.assign({}, result, { [entityId]: JSON.parse(serializedItems[entityId]) });
+			return {
+				...result,
+				[entityId]: JSON.parse(serializedItems[entityId]),
+			};
 		} catch (e) {
 			return result;
 		}
