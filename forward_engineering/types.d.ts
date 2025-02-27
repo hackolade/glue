@@ -14,6 +14,7 @@ export type KeyType = 'PRIMARY KEY' | 'UNIQUE' | 'CHECK';
 
 export type ConstraintDto = {
   keyType: KeyType;
+  expression?: string;
 };
 
 export type JsonSchema = Record<string, unknown>;
