@@ -10,7 +10,7 @@ export type ColumnDefinition = {
   unique?: boolean;
 };
 
-export type KeyType = 'PRIMARY KEY' | 'UNIQUE';
+export type KeyType = 'PRIMARY KEY' | 'UNIQUE' | 'CHECK';
 
 export type ConstraintDto = {
   keyType: KeyType;
