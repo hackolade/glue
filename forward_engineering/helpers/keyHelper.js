@@ -40,6 +40,46 @@ const getKeyNames = (tableData, jsonSchema, definitions) => {
 	};
 };
 
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto | undefined}
+ */
+const getPrimaryKeyConstraint = ({ columnDefinition }) => {
+	if (!columnDefinition.primaryKey) {
+		return;
+	}
+
+	return {
+		keyType: 'PRIMARY KEY',
+	};
+};
+
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto | undefined}
+ */
+const getUniqueKeyConstraint = ({ columnDefinition, jsonSchema }) => {
+	if (!columnDefinition.unique) {
+		return;
+	}
+
+	return {
+		keyType: 'UNIQUE',
+	};
+};
+
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto[]}
+ */
+const getColumnConstraints = ({ columnDefinition, jsonSchema }) => {
+	const primaryKeyConstraint = getPrimaryKeyConstraint({ columnDefinition });
+	const uniqueKeyConstraint = getUniqueKeyConstraint({ columnDefinition });
+
+	return [primaryKeyConstraint, uniqueKeyConstraint].filter(Boolean);
+};
+
 module.exports = {
 	getKeyNames,
+	getColumnConstraints,
 };
