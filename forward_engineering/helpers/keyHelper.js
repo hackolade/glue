@@ -40,6 +40,62 @@ const getKeyNames = (tableData, jsonSchema, definitions) => {
 	};
 };
 
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto | undefined}
+ */
+const getPrimaryKeyConstraint = ({ columnDefinition }) => {
+	if (!columnDefinition.primaryKey) {
+		return;
+	}
+
+	return {
+		keyType: 'PRIMARY KEY',
+	};
+};
+
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto | undefined}
+ */
+const getUniqueKeyConstraint = ({ columnDefinition }) => {
+	if (!columnDefinition.unique) {
+		return;
+	}
+
+	return {
+		keyType: 'UNIQUE',
+	};
+};
+
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto | undefined}
+ */
+const getCheckConstraint = ({ columnDefinition }) => {
+	if (!columnDefinition.check) {
+		return;
+	}
+
+	return {
+		keyType: 'CHECK',
+		expression: columnDefinition.check,
+	};
+};
+
+/**
+ * @param {{ columnDefinition: ColumnDefinition }}
+ * @returns {ConstraintDto[]}
+ */
+const getColumnConstraints = ({ columnDefinition, jsonSchema }) => {
+	const primaryKeyConstraint = getPrimaryKeyConstraint({ columnDefinition });
+	const uniqueKeyConstraint = getUniqueKeyConstraint({ columnDefinition });
+	const checkConstraint = getCheckConstraint({ columnDefinition });
+
+	return [primaryKeyConstraint, uniqueKeyConstraint, checkConstraint].filter(Boolean);
+};
+
 module.exports = {
 	getKeyNames,
+	getColumnConstraints,
 };
