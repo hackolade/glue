@@ -16,11 +16,14 @@ class DbtProvider {
 	}
 
 	/**
-	 * @param {{ type: string; columnDefinition: ColumnDefinition }}
+	 * @param {{ columnDefinition: ColumnDefinition }}
 	 * @returns {string}
 	 */
-	decorateType({ type, columnDefinition }) {
-		return getTypeByProperty(columnDefinition);
+	decorateType({ columnDefinition }) {
+		const type = getTypeByProperty(columnDefinition);
+		const isComplexType = /^(array|struct)/i.test(type);
+
+		return isComplexType ? type.replace(/<[\s\S]+>$/, '<>') : type;
 	}
 
 	/**
