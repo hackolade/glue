@@ -22,8 +22,6 @@ module.exports = {
 	},
 
 	async testConnection(connectionInfo, logger, cb) {
-		logInfo('Test connection', connectionInfo, logger);
-
 		const connection = await this.connect({ connectionInfo, logger });
 		const instance = connectionHelper.createInstance({ connection, logger });
 
@@ -37,8 +35,6 @@ module.exports = {
 	},
 
 	async getDbCollectionsNames(connectionInfo, logger, cb) {
-		logInfo('Retrieving databases and tables information', connectionInfo, logger);
-
 		try {
 			const connection = await this.connect({ connectionInfo, logger });
 			const instance = connectionHelper.createInstance({ connection, logger });
@@ -75,8 +71,6 @@ module.exports = {
 	},
 
 	async getDbCollectionsData(data, logger, cb) {
-		logger.log('info', data, 'Retrieving schema', data.hiddenKeys);
-
 		const { collectionData } = data;
 		const databases = collectionData.dataBaseNames;
 		const tables = collectionData.collections;
@@ -199,10 +193,4 @@ const getColumnsSchema = ({ columns, logger }) => {
 		schemaHelper.setProperty(item.name, columnSchema, acc);
 		return acc;
 	}, {});
-};
-
-const logInfo = (step, connectionInfo, logger) => {
-	logger.clear();
-	logger.log('info', logHelper.getSystemInfo(connectionInfo.appVersion), step);
-	logger.log('info', connectionInfo, 'connectionInfo', connectionInfo.hiddenKeys);
 };
