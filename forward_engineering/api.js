@@ -1,3 +1,5 @@
+'use strict';
+
 const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
 const { hckFetchAwsSdkHttpHandler } = require('@hackolade/fetch');
 const { getApiStatements } = require('./helpers/awsCliScriptHelpers/applyToInstanceHelper');
@@ -13,6 +15,9 @@ module.exports = {
 		if (!data.script) {
 			return callback({ message: 'Empty script' });
 		}
+
+		logger.clear();
+		logger.log('info', data, data.hiddenKeys);
 
 		const glueInstance = getGlueInstance({ connectionInfo: data, logger });
 
@@ -44,6 +49,8 @@ module.exports = {
 	},
 
 	async testConnection(connectionInfo, logger, callback) {
+		logger.log('info', connectionInfo, 'Test connection', connectionInfo.hiddenKeys);
+
 		const glueInstance = getGlueInstance({ connectionInfo, logger });
 
 		try {
