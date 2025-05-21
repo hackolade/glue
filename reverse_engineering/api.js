@@ -1,7 +1,6 @@
 const fs = require('fs');
 const antlr4 = require('antlr4');
 const { flatten } = require('lodash');
-const logHelper = require('./logHelper');
 const HiveLexer = require('./parser/HiveLexer.js');
 const HiveParser = require('./parser/HiveParser.js');
 const hqlToCollectionsVisitor = require('./hqlToCollectionsVisitor.js');
@@ -203,6 +202,5 @@ const getColumnsSchema = ({ columns, logger }) => {
 
 const logInfo = (step, connectionInfo, logger) => {
 	logger.clear();
-	logger.log('info', logHelper.getSystemInfo(connectionInfo.appVersion), step);
 	logger.log('info', connectionInfo, 'connectionInfo', connectionInfo.hiddenKeys);
 };
