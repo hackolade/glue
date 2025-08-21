@@ -159,6 +159,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "externalTable",
 				"propertyType": "checkbox",
 				"defaultValue": true,
+				"disabled": true,
 				"dependency": {
 					"key": "tableFormat",
 					"value": "Iceberg"
