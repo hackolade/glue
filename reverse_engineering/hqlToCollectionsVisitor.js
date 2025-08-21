@@ -30,6 +30,7 @@ const {
 } = require('./commandsService');
 
 const schemaHelper = require('./schemaHelper');
+const { mapTableProperties } = require('./helpers/tablePropertiesHelper');
 
 const ALLOWED_COMMANDS = [
 	HiveParser.RULE_createTableStatement,
@@ -77,7 +78,8 @@ class Visitor extends HiveParserVisitor {
 		const tableRowFormat = this.visitWhenExists(ctx, 'tableRowFormat', {});
 		const description = this.visitWhenExists(ctx, 'tableComment');
 		const location = this.visitWhenExists(ctx, 'tableLocation');
-		const tableProperties = this.visitWhenExists(ctx, 'tablePropertiesPrefixed');
+		const tablePropertiesPrefixed = this.visitWhenExists(ctx, 'tablePropertiesPrefixed');
+		const { tableFormat, tableProperties } = getTableProperties(tablePropertiesPrefixed);
 		const temporaryTable = Boolean(ctx.KW_TEMPORARY());
 		const externalTable = Boolean(ctx.KW_EXTERNAL());
 		const storedAsTable = this.visitWhenExists(ctx, 'tableFileFormat', {});
@@ -116,6 +118,7 @@ class Visitor extends HiveParserVisitor {
 						skewedOn,
 						skewStoredAsDir,
 						location,
+						tableFormat,
 						tableProperties,
 						...storedAsTable,
 						...tableRowFormat,
@@ -1440,6 +1443,26 @@ const getMappingType = ctx => {
 		return 'group';
 	} else if (ctx.KW_APPLICATION()) {
 		return 'application';
+	}
+};
+
+const getTableProperties = tablePropertiesPrefixed => {
+	try {
+		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}').replace(/=/g, ':');
+		const parsedProperties = JSON.parse(properties);
+		const { table_type, ...restTableProperties } = parsedProperties;
+		const tableFormat = table_type === 'ICEBERG' ? 'Iceberg' : 'Standard';
+		const tableProperties = mapTableProperties(restTableProperties);
+
+		return {
+			tableFormat,
+			tableProperties,
+		};
+	} catch (err) {
+		return {
+			tableFormat: 'Standard',
+			tableProperties: [],
+		};
 	}
 };
 
