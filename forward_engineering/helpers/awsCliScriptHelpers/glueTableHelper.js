@@ -26,7 +26,9 @@ const getGlueTableCreateStatement = (tableSchema, databaseName) => {
 				StoredAsSubDirectories: tableSchema.StoredAsSubDirectories,
 			},
 			Parameters: mapTableParameters(tableSchema),
-			PartitionKeys: getGluePartitionKeyTableColumns(tableSchema.properties),
+			PartitionKeys: handleParameterByTableFormat(tableSchema, () =>
+				getGluePartitionKeyTableColumns(tableSchema.properties),
+			),
 			TableType: tableSchema.externalTable ? 'EXTERNAL_TABLE' : '',
 		},
 		...getTableFormatParameters(tableSchema),
@@ -77,13 +79,21 @@ const mapTableParameters = tableSchema => {
 	}
 };
 
+const handleParameterByTableFormat = (tableSchema, getParameter) => {
+	if (tableSchema.tableFormat === TABLE_FORMAT.iceberg) {
+		return;
+	}
+
+	return getParameter();
+};
+
 const getTableFormatParameters = tableSchema => {
 	if (tableSchema.tableFormat === TABLE_FORMAT.iceberg) {
 		return {
 			OpenTableFormatInput: {
 				IcebergInput: {
 					MetadataOperation: 'CREATE',
-					Version: tableSchema.icebergVersion,
+					Version: `${tableSchema.icebergVersion}`,
 				},
 			},
 		};
