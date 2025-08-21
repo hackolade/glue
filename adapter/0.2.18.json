@@ -43,14 +43,16 @@
 {
 	"modify": {
 		"entity": [
-			"assignProperties",
-			{
-				"key": "tableFormat",
-				"exist": false
-			},
-			{
-				"tableFormat": "Standard"
-			}
+			[
+				"assignProperties",
+				{
+					"key": "tableFormat",
+					"exist": false
+				},
+				{
+					"tableFormat": "Standard"
+				}
+			]
 		]
 	}
 }
