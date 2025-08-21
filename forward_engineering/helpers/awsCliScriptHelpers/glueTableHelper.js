@@ -28,6 +28,7 @@ const getGlueTableCreateStatement = (tableSchema, databaseName) => {
 			PartitionKeys: getGluePartitionKeyTableColumns(tableSchema.properties),
 			TableType: tableSchema.externalTable ? 'EXTERNAL_TABLE' : '',
 		},
+		...getTableFormatParameters(tableSchema),
 	};
 
 	const cliStatement = `${CLI} ${CREATE_TABLE} '${JSON.stringify(tableParameters, null, 2)}'`;
@@ -73,6 +74,21 @@ const mapTableParameters = tableSchema => {
 	} catch (err) {
 		return {};
 	}
+};
+
+const getTableFormatParameters = tableSchema => {
+	if (tableSchema.tableFormat === 'Iceberg') {
+		return {
+			OpenTableFormatInput: {
+				IcebergInput: {
+					MetadataOperation: 'CREATE',
+					Version: tableSchema.icebergVersion,
+				},
+			},
+		};
+	}
+
+	return {};
 };
 
 module.exports = {
