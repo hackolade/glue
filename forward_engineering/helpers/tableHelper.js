@@ -226,7 +226,7 @@ const getStoredAsStatement = tableData => {
 };
 
 const getTableProperties = tableData => {
-	const icebergTableProperty = tableData.tableFormat === 'Iceberg' ? '"table_type"="ICEBERG", ' : '';
+	const icebergTableProperty = tableData.tableFormat === TABLE_F ? '"table_type"="ICEBERG", ' : '';
 	const tableProperties = (tableData.tableProperties ?? [])
 		.map(prop => `"${prop.tablePropKey}"="${prop.tablePropValue}"`)
 		.join(', ');

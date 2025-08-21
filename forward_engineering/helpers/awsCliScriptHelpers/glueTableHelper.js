@@ -1,4 +1,5 @@
 const { CLI, CREATE_TABLE } = require('./cliConstants');
+const { TABLE_FORMAT } = require('../../../shared/constants');
 const {
 	getGlueTableColumns,
 	getGluePartitionKeyTableColumns,
@@ -77,7 +78,7 @@ const mapTableParameters = tableSchema => {
 };
 
 const getTableFormatParameters = tableSchema => {
-	if (tableSchema.tableFormat === 'Iceberg') {
+	if (tableSchema.tableFormat === TABLE_FORMAT.iceberg) {
 		return {
 			OpenTableFormatInput: {
 				IcebergInput: {

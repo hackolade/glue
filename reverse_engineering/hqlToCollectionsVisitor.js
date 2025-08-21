@@ -31,6 +31,7 @@ const {
 
 const schemaHelper = require('./schemaHelper');
 const { mapTableProperties } = require('./helpers/tablePropertiesHelper');
+const { TABLE_FORMAT } = require('../shared/constants');
 
 const ALLOWED_COMMANDS = [
 	HiveParser.RULE_createTableStatement,
@@ -1451,7 +1452,7 @@ const getTableProperties = tablePropertiesPrefixed => {
 		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}').replace(/=/g, ':');
 		const parsedProperties = JSON.parse(properties);
 		const { table_type, ...restTableProperties } = parsedProperties;
-		const tableFormat = table_type === 'ICEBERG' ? 'Iceberg' : 'Standard';
+		const tableFormat = table_type === 'ICEBERG' ? TABLE_FORMAT.iceberg : TABLE_FORMAT.standard;
 		const tableProperties = mapTableProperties(restTableProperties);
 
 		return {
@@ -1460,7 +1461,7 @@ const getTableProperties = tablePropertiesPrefixed => {
 		};
 	} catch (err) {
 		return {
-			tableFormat: 'Standard',
+			tableFormat: TABLE_FORMAT.standard,
 			tableProperties: [],
 		};
 	}
