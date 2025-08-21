@@ -30,6 +30,8 @@ const {
 } = require('./commandsService');
 
 const schemaHelper = require('./schemaHelper');
+const { mapTableProperties } = require('./helpers/tablePropertiesHelper');
+const { TABLE_FORMAT } = require('../shared/constants');
 
 const ALLOWED_COMMANDS = [
 	HiveParser.RULE_createTableStatement,
@@ -49,6 +51,11 @@ const ALLOWED_COMMANDS = [
 ];
 
 class Visitor extends HiveParserVisitor {
+	constructor(logger) {
+		super();
+		this.logger = logger;
+	}
+
 	visitStatement(ctx) {
 		const execStatement = ctx.execStatement();
 		if (execStatement) {
@@ -77,7 +84,8 @@ class Visitor extends HiveParserVisitor {
 		const tableRowFormat = this.visitWhenExists(ctx, 'tableRowFormat', {});
 		const description = this.visitWhenExists(ctx, 'tableComment');
 		const location = this.visitWhenExists(ctx, 'tableLocation');
-		const tableProperties = this.visitWhenExists(ctx, 'tablePropertiesPrefixed');
+		const tablePropertiesPrefixed = this.visitWhenExists(ctx, 'tablePropertiesPrefixed');
+		const { tableFormat, tableProperties } = getTableProperties(tablePropertiesPrefixed, this.logger);
 		const temporaryTable = Boolean(ctx.KW_TEMPORARY());
 		const externalTable = Boolean(ctx.KW_EXTERNAL());
 		const storedAsTable = this.visitWhenExists(ctx, 'tableFileFormat', {});
@@ -116,6 +124,7 @@ class Visitor extends HiveParserVisitor {
 						skewedOn,
 						skewStoredAsDir,
 						location,
+						tableFormat,
 						tableProperties,
 						...storedAsTable,
 						...tableRowFormat,
@@ -1440,6 +1449,28 @@ const getMappingType = ctx => {
 		return 'group';
 	} else if (ctx.KW_APPLICATION()) {
 		return 'application';
+	}
+};
+
+const getTableProperties = (tablePropertiesPrefixed, logger) => {
+	try {
+		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}');
+		const parsedProperties = JSON.parse(properties);
+		const { table_type, ...restTableProperties } = parsedProperties;
+		const tableFormat = table_type === 'ICEBERG' ? TABLE_FORMAT.iceberg : TABLE_FORMAT.standard;
+		const tableProperties = mapTableProperties(restTableProperties);
+
+		return {
+			tableFormat,
+			tableProperties,
+		};
+	} catch (error) {
+		logger.log('error', error, 'getTableProperties');
+
+		return {
+			tableFormat: TABLE_FORMAT.standard,
+			tableProperties: [],
+		};
 	}
 };
 

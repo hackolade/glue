@@ -124,9 +124,46 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "text"
 			},
 			{
+				"propertyName": "Table format",
+				"propertyKeyword": "tableFormat",
+				"propertyTooltip": "Select from list of options",
+				"propertyType": "select",
+				"defaultValue": "Standard",
+				"options": ["Standard", "Iceberg"]
+			},
+			{
+				"propertyName": "Version",
+				"propertyKeyword": "icebergVersion",
+				"propertyValidate": true,
+				"propertyType": "numeric",
+				"valueType": "number",
+				"defaultValue": 2,
+				"minValue": 1,
+				"maxValue": 2,
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Iceberg"
+				}
+			},
+			{
 				"propertyName": "External",
 				"propertyKeyword": "externalTable",
-				"propertyType": "checkbox"
+				"propertyType": "checkbox",
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
+			},
+			{
+				"propertyName": "External",
+				"propertyKeyword": "externalTable",
+				"propertyType": "checkbox",
+				"defaultValue": true,
+				"disabled": true,
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Iceberg"
+				}
 			},
 			{
 				"propertyName": "Stored as",
@@ -144,14 +181,22 @@ making sure that you maintain a proper JSON format.
 					"JSONfile",
 					"by",
 					"input/output format"
-				]
+				],
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Row format",
 				"propertyKeyword": "rowFormat",
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
-				"options": ["", "delimited", "SerDe"]
+				"options": ["", "delimited", "SerDe"],
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Fields terminated by",
@@ -268,7 +313,11 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Compressed",
 				"propertyKeyword": "compressed",
-				"propertyType": "checkbox"
+				"propertyType": "checkbox",
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Parameter paths",
@@ -296,7 +345,11 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "",
 						"propertyType": "text"
 					}
-				]
+				],
+				"dependency": {
+					"key": "storedAsTable",
+					"value": "input/output format"
+				}
 			},
 			{
 				"propertyName": "Stored as sub-directories",
@@ -308,6 +361,11 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
+				"propertyName": "Location",
+				"propertyKeyword": "location",
+				"propertyType": "text"
+			},
+			{
 				"propertyName": "Partition key",
 				"propertyKeyword": "compositePartitionKey",
 				"propertyType": "primaryKeySetter",
@@ -317,14 +375,22 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Disable No Validate",
 				"propertyKeyword": "disableNoValidate",
-				"propertyType": "checkbox"
+				"propertyType": "checkbox",
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Clustering key",
 				"propertyKeyword": "compositeClusteringKey",
 				"propertyType": "primaryKeySetter",
 				"abbr": "CK",
-				"setPrimaryKey": false
+				"setPrimaryKey": false,
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Sorted by",
@@ -334,42 +400,61 @@ making sure that you maintain a proper JSON format.
 				"attributeList": [
 					{ "name": "ascending", "abbr": "\u2191" },
 					{ "name": "descending", "abbr": "\u2193" }
-				]
+				],
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Number of buckets",
 				"propertyKeyword": "numBuckets",
 				"propertyType": "numeric",
 				"valueType": "number",
-				"allowNegative": false
+				"allowNegative": false,
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Skewed by",
 				"propertyKeyword": "skewedby",
 				"propertyType": "fieldList",
-				"template": "orderedList"
+				"template": "orderedList",
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Skewed on",
 				"propertyKeyword": "skewedOn",
-				"propertyType": "text"
+				"propertyType": "text",
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Skew stored as directories",
 				"propertyKeyword": "skewStoredAsDir",
-				"propertyType": "checkbox"
-			},
-			{
-				"propertyName": "Location",
-				"propertyKeyword": "location",
-				"propertyType": "text"
+				"propertyType": "checkbox",
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Classification",
 				"propertyKeyword": "classification",
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
-				"options": ["Avro", "CSV", "JSON", "XML", "Parquet", "ORC"]
+				"options": ["Avro", "CSV", "JSON", "XML", "Parquet", "ORC"],
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Table properties",

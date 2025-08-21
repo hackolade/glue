@@ -1,4 +1,5 @@
 const { get } = require('lodash');
+const { TABLE_FORMAT } = require('../../shared/constants');
 
 const mapSortColumns = (items = []) => {
 	return items.map(item => ({
@@ -46,7 +47,7 @@ const getClassification = (parameters = {}) => {
 
 const mapTableProperties = (parameters = {}) => {
 	return Object.entries(parameters).reduce((acc, [key, value]) => {
-		if (key === 'classification') {
+		if (['classification', 'table_type'].includes(key)) {
 			return acc;
 		}
 		return acc.concat({
@@ -99,6 +100,8 @@ const mapTableData = ({ tableData, logger }) => {
 			parameterPaths: mapSerDePaths(tableData.Table.StorageDescriptor?.SerdeInfo),
 			serDeParameters: mapSerDeParameters(tableData.Table.StorageDescriptor?.SerdeInfo?.Parameters),
 			classification: getClassification(tableData.Table.Parameters),
+			tableFormat:
+				tableData.Table.Parameters?.table_type === 'ICEBERG' ? TABLE_FORMAT.iceberg : TABLE_FORMAT.standard,
 		},
 		partitionKeys,
 		columns: mapColumns({ columns: tableData.Table.StorageDescriptor.Columns, logger }),
@@ -107,4 +110,5 @@ const mapTableData = ({ tableData, logger }) => {
 
 module.exports = {
 	mapTableData,
+	mapTableProperties,
 };

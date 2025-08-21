@@ -1,4 +1,5 @@
 const { CLI, CREATE_TABLE } = require('./cliConstants');
+const { TABLE_FORMAT } = require('../../../shared/constants');
 const {
 	getGlueTableColumns,
 	getGluePartitionKeyTableColumns,
@@ -25,9 +26,12 @@ const getGlueTableCreateStatement = (tableSchema, databaseName) => {
 				StoredAsSubDirectories: tableSchema.StoredAsSubDirectories,
 			},
 			Parameters: mapTableParameters(tableSchema),
-			PartitionKeys: getGluePartitionKeyTableColumns(tableSchema.properties),
+			PartitionKeys: handleParameterByTableFormat(tableSchema, () =>
+				getGluePartitionKeyTableColumns(tableSchema.properties),
+			),
 			TableType: tableSchema.externalTable ? 'EXTERNAL_TABLE' : '',
 		},
+		...getTableFormatParameters(tableSchema),
 	};
 
 	const cliStatement = `${CLI} ${CREATE_TABLE} '${JSON.stringify(tableParameters, null, 2)}'`;
@@ -73,6 +77,29 @@ const mapTableParameters = tableSchema => {
 	} catch (err) {
 		return {};
 	}
+};
+
+const handleParameterByTableFormat = (tableSchema, getParameter) => {
+	if (tableSchema.tableFormat === TABLE_FORMAT.iceberg) {
+		return;
+	}
+
+	return getParameter();
+};
+
+const getTableFormatParameters = tableSchema => {
+	if (tableSchema.tableFormat === TABLE_FORMAT.iceberg) {
+		return {
+			OpenTableFormatInput: {
+				IcebergInput: {
+					MetadataOperation: 'CREATE',
+					Version: `${tableSchema.icebergVersion}`,
+				},
+			},
+		};
+	}
+
+	return {};
 };
 
 module.exports = {
