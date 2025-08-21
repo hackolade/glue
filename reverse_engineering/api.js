@@ -145,7 +145,7 @@ module.exports = {
 
 			const tree = parser.statements();
 
-			const hqlToCollectionsGenerator = new hqlToCollectionsVisitor();
+			const hqlToCollectionsGenerator = new hqlToCollectionsVisitor(logger);
 
 			const commands = tree.accept(hqlToCollectionsGenerator);
 			const { result, info, relationships } = commandsService.convertCommandsToReDocs(

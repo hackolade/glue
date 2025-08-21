@@ -51,6 +51,11 @@ const ALLOWED_COMMANDS = [
 ];
 
 class Visitor extends HiveParserVisitor {
+	constructor(logger) {
+		super();
+		this.logger = logger;
+	}
+
 	visitStatement(ctx) {
 		const execStatement = ctx.execStatement();
 		if (execStatement) {
@@ -80,7 +85,7 @@ class Visitor extends HiveParserVisitor {
 		const description = this.visitWhenExists(ctx, 'tableComment');
 		const location = this.visitWhenExists(ctx, 'tableLocation');
 		const tablePropertiesPrefixed = this.visitWhenExists(ctx, 'tablePropertiesPrefixed');
-		const { tableFormat, tableProperties } = getTableProperties(tablePropertiesPrefixed);
+		const { tableFormat, tableProperties } = getTableProperties(tablePropertiesPrefixed, this.logger);
 		const temporaryTable = Boolean(ctx.KW_TEMPORARY());
 		const externalTable = Boolean(ctx.KW_EXTERNAL());
 		const storedAsTable = this.visitWhenExists(ctx, 'tableFileFormat', {});
@@ -1447,9 +1452,9 @@ const getMappingType = ctx => {
 	}
 };
 
-const getTableProperties = tablePropertiesPrefixed => {
+const getTableProperties = (tablePropertiesPrefixed, logger) => {
 	try {
-		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}').replace(/=/g, ':');
+		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}');
 		const parsedProperties = JSON.parse(properties);
 		const { table_type, ...restTableProperties } = parsedProperties;
 		const tableFormat = table_type === 'ICEBERG' ? TABLE_FORMAT.iceberg : TABLE_FORMAT.standard;
@@ -1459,7 +1464,9 @@ const getTableProperties = tablePropertiesPrefixed => {
 			tableFormat,
 			tableProperties,
 		};
-	} catch (err) {
+	} catch (error) {
+		logger.log('error', error, 'getTableProperties');
+
 		return {
 			tableFormat: TABLE_FORMAT.standard,
 			tableProperties: [],
