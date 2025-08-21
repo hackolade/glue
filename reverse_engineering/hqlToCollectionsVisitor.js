@@ -1454,7 +1454,7 @@ const getMappingType = ctx => {
 
 const getTableProperties = (tablePropertiesPrefixed, logger) => {
 	try {
-		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}');
+		const properties = tablePropertiesPrefixed.replace(/^\(/, '{').replace(/\)$/, '}').replace(/=/g, ':');
 		const parsedProperties = JSON.parse(properties);
 		const { table_type, ...restTableProperties } = parsedProperties;
 		const tableFormat = table_type === 'ICEBERG' ? TABLE_FORMAT.iceberg : TABLE_FORMAT.standard;
