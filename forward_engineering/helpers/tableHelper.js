@@ -13,6 +13,7 @@ const {
 } = require('./generalHelper');
 const { getColumnsStatement, getColumnStatement, getColumns } = require('./columnHelper');
 const keyHelper = require('./keyHelper');
+const { TABLE_FORMAT } = require('../../shared/constants');
 
 const getCreateStatement = ({
 	dbName,
@@ -226,7 +227,7 @@ const getStoredAsStatement = tableData => {
 };
 
 const getTableProperties = tableData => {
-	const icebergTableProperty = tableData.tableFormat === TABLE_F ? '"table_type"="ICEBERG", ' : '';
+	const icebergTableProperty = tableData.tableFormat === TABLE_FORMAT.iceberg ? '"table_type"="ICEBERG", ' : '';
 	const tableProperties = (tableData.tableProperties ?? [])
 		.map(prop => `"${prop.tablePropKey}"="${prop.tablePropValue}"`)
 		.join(', ');
