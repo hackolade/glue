@@ -225,11 +225,14 @@ const getStoredAsStatement = tableData => {
 	return `STORED AS ${tableData.storedAsTable.toUpperCase()}`;
 };
 
-const getTableProperties = properties => {
-	if (!properties) {
-		return '';
-	}
-	return `(${properties.map(prop => `"${prop.tablePropKey}"="${prop.tablePropValue}"`).join(', ')})`;
+const getTableProperties = tableData => {
+	const icebergTableProperty = tableData.tableFormat === 'Iceberg' ? '"table_type"="ICEBERG", ' : '';
+	const tableProperties = (tableData.tableProperties ?? [])
+		.map(prop => `"${prop.tablePropKey}"="${prop.tablePropValue}"`)
+		.join(', ');
+	const tablePropertiesClause = icebergTableProperty + tableProperties;
+
+	return tablePropertiesClause ? `(${tablePropertiesClause})` : '';
 };
 
 const isNumBucketsValid = numBuckets => {
@@ -275,7 +278,7 @@ const getTableStatement = (containerData, entityData, jsonSchema, definitions, f
 		rowFormatStatement: getRowFormat(tableData),
 		storedAsStatement: getStoredAsStatement(tableData),
 		location: tableData.location,
-		tableProperties: getTableProperties(tableData.tableProperties),
+		tableProperties: getTableProperties(tableData),
 		selectStatement: '',
 		isActivated: isTableActivated,
 	});
