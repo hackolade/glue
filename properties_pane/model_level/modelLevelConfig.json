@@ -133,7 +133,8 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": false,
 				"propertyTooltip": "DB version",
 				"propertyType": "select",
-				"options": ["2.x"],
+				"options": ["2.x", "3.x"],
+				"default": "3.x",
 				"disabledOption": false
 			},
 			{
