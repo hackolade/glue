@@ -149,20 +149,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "External",
 				"propertyKeyword": "externalTable",
 				"propertyType": "checkbox",
+				"defaultValue": true,
+				"disabled": true,
 				"dependency": {
 					"key": "tableFormat",
-					"value": "Standard"
+					"value": "Iceberg"
 				}
 			},
 			{
 				"propertyName": "External",
 				"propertyKeyword": "externalTable",
 				"propertyType": "checkbox",
-				"defaultValue": true,
-				"disabled": true,
+				"defaultValue": false,
 				"dependency": {
 					"key": "tableFormat",
-					"value": "Iceberg"
+					"value": "Standard"
 				}
 			},
 			{
