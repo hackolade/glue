@@ -134,7 +134,6 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "DB version",
 				"propertyType": "select",
 				"options": ["2.x", "3.x"],
-				"default": "3.x",
 				"disabledOption": false
 			},
 			{
