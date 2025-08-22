@@ -20,9 +20,13 @@ const getGlueTableCreateStatement = (tableSchema, databaseName) => {
 				OutputFormat: tableSchema.outputFormatClassname,
 				Compressed: tableSchema.compressed,
 				NumberOfBuckets: tableSchema.numBuckets,
-				SerdeInfo: mapSerdeInfo(tableSchema),
-				BucketColumns: getGlueTableClusteringKeyColumns(tableSchema.properties),
-				SortColumns: getGlueTableSortingColumns(tableSchema.sortedByKey, tableSchema.properties),
+				SerdeInfo: handleParameterByTableFormat(tableSchema, () => mapSerdeInfo(tableSchema)),
+				BucketColumns: handleParameterByTableFormat(tableSchema, () =>
+					getGlueTableClusteringKeyColumns(tableSchema.properties),
+				),
+				SortColumns: handleParameterByTableFormat(tableSchema, () =>
+					getGlueTableSortingColumns(tableSchema.sortedByKey, tableSchema.properties),
+				),
 				StoredAsSubDirectories: tableSchema.StoredAsSubDirectories,
 			},
 			Parameters: mapTableParameters(tableSchema),
