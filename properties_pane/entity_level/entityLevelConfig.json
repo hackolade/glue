@@ -371,7 +371,11 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "compositePartitionKey",
 				"propertyType": "primaryKeySetter",
 				"abbr": "PK",
-				"setPrimaryKey": false
+				"setPrimaryKey": false,
+				"dependency": {
+					"key": "tableFormat",
+					"value": "Standard"
+				}
 			},
 			{
 				"propertyName": "Disable No Validate",
