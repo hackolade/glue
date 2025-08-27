@@ -11,7 +11,8 @@
             "applicationTarget": "Glue",
             "title": "AWS Glue Data Catalog",
             "versions": [
-                "2.x"
+                "2.x",
+                "3.x"
             ]
         },
         "features": {

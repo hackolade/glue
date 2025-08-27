@@ -22,7 +22,7 @@ const getGlueTableClusteringKeyColumns = (properties = {}) => {
 
 const getGlueTableSortingColumns = (sortingItems = [], properties = {}) => {
 	return sortingItems.map(item => {
-		const property = Object.entries(properties).find(([key, value]) => value.id === item.id);
+		const property = Object.entries(properties).find(([key, value]) => value.GUID === item.keyId);
 		const propertyName = property && property[0];
 		return {
 			Column: propertyName,
