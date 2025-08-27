@@ -12,7 +12,17 @@
 		"collectionName": "new_table",
 		"collectionUsers": [],
 		"collation": {},
-		"storedAsTable": "input/output format"
+		"storedAsTable": {
+			"valueDependencies": [
+				{
+					"value": "input/output format",
+					"dependency": {
+						"key": "tableFormat",
+						"value": "Standard"
+					}
+				}
+			]
+		}
 	},
 	"field": {
 		"name": "new_column"
