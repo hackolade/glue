@@ -46,7 +46,7 @@ const getForeignKeyHashTable = (
 			hashTable[relationship.childCollection] = {};
 		}
 
-		const constraintName = relationship.name;
+		const constraintName = relationship.code || relationship.name;
 		const parentTableData = getTab(0, entityData[relationship.parentCollection]);
 		const parentTableName = getName(parentTableData);
 		const childTableData = getTab(0, entityData[relationship.childCollection]);
@@ -61,10 +61,11 @@ const getForeignKeyHashTable = (
 		if (!hashTable[relationship.childCollection][groupKey]) {
 			hashTable[relationship.childCollection][groupKey] = [];
 		}
-		const disableNoValidate = ((relationship || {}).customProperties || {}).disableNoValidate;
+		const disableNoValidate = relationship?.customProperties?.disableNoValidate;
 
 		hashTable[relationship.childCollection][groupKey].push({
 			name: relationship.name,
+			code: relationship.code,
 			disableNoValidate: disableNoValidate,
 			parentTableName: parentTableName,
 			childTableName: childTableName,
@@ -86,13 +87,14 @@ const getForeignKeyStatementsByHashItem = hashItem => {
 	return Object.keys(hashItem || {})
 		.map(groupKey => {
 			const keys = hashItem[groupKey];
-			const constraintName = (keys[0] || {}).name;
-			const parentTableName = (keys[0] || {}).parentTableName;
-			const childTableName = (keys[0] || {}).childTableName;
-			const disableNoValidate = keys.some(item => (item || {}).disableNoValidate);
+			const data = keys[0];
+			const constraintName = data?.code || data?.name;
+			const parentTableName = data?.parentTableName;
+			const childTableName = data?.childTableName;
+			const disableNoValidate = keys.some(item => item?.disableNoValidate);
 			const childColumns = keys.map(item => item.childColumn).join(', ');
 			const parentColumns = keys.map(item => item.parentColumn).join(', ');
-			const isActivated = (keys[0] || {}).isActivated;
+			const isActivated = data?.isActivated;
 
 			const statement = `ALTER TABLE ${childTableName} ADD CONSTRAINT ${constraintName} FOREIGN KEY (${childColumns}) REFERENCES ${parentTableName}(${parentColumns}) ${disableNoValidate ? 'DISABLE NOVALIDATE' : ''};`;
 
