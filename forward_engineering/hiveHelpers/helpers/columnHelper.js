@@ -453,6 +453,7 @@ const getColumnConstraintsStatement = ({ collection, column }) => {
 		statements.push(
 			getConstraint({
 				statement: `CHECK (${check})`,
+				skipName: true,
 				postfix: CONSTRAINT_POSTFIX.check,
 				noValidate: getNoValidateStatement(enableSpecification),
 			}),
