@@ -99,8 +99,8 @@ const hydrateAlterColumns = (entity, definitions) => {
 		const oldName = oldField.name;
 		const newName = newField.name;
 
-		const newComment = property.description || '';
-		const oldComment = entity.role.properties[oldName]?.description || '';
+		const newComment = property.comments || '';
+		const oldComment = entity.role.properties[oldName]?.comments || '';
 
 		const isCommentChanged = newComment !== oldComment;
 		const isColumnChanged = oldName !== newName || newType !== oldType || isCommentChanged;
