@@ -23,7 +23,7 @@ const getStructChildProperties = (getTypeByProperty, definitions) => property =>
 			const structChild = getStructChild(
 				name,
 				getTypeByProperty(childProperty),
-				getDescription(definitions, childProperty),
+				getComment(definitions, childProperty),
 			);
 			if (isActivated) {
 				activatedProps.push(structChild);
@@ -317,7 +317,7 @@ const getColumns = (jsonSchema, areColumnConstraintsAvailable, definitions) => {
 			...getColumn(
 				prepareName(name),
 				getTypeByProperty(definitions)(property),
-				getDescription(definitions, property),
+				getComment(definitions, property),
 				areColumnConstraintsAvailable
 					? {
 							notNull: isRequired,
@@ -389,14 +389,14 @@ const getColumnConstraintsStatement = constraint => {
 	return constraints[0] || '';
 };
 
-const getDescription = (definitions, property) => {
+const getComment = (definitions, property) => {
 	if (!property.$ref) {
-		return property.description;
+		return property.comments;
 	}
 
-	const definitionDescription = getDefinitionByReference(definitions, property)?.description;
+	const definitionComment = getDefinitionByReference(definitions, property)?.comments;
 
-	return property.refDescription || property.description || definitionDescription;
+	return property.comments || definitionComment;
 };
 
 /**
