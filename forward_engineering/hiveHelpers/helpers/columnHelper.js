@@ -358,10 +358,10 @@ const getColumns = (jsonSchema, areColumnConstraintsAvailable, definitions) => {
 	return { columns, deactivatedColumnNames };
 };
 
-const getColumnStatementParts = ({ collection, column }) => {
+const getColumnStatementParts = ({ collection, column, isAlterScript }) => {
 	const { name, type, comment, isActivated, isParentActivated } = column;
 	const commentStatement = comment ? ` COMMENT '${encodeStringLiteral(comment)}'` : '';
-	const { inline, separate } = getColumnConstraintsStatement({ collection, column });
+	const { inline, separate } = getColumnConstraintsStatement({ collection, column, isAlterScript });
 	const isColumnActivated = isParentActivated ? isActivated : true;
 
 	return {
@@ -370,7 +370,7 @@ const getColumnStatementParts = ({ collection, column }) => {
 	};
 };
 
-const getColumnsStatement = ({ collection, columns, isParentActivated }) => {
+const getColumnsStatement = ({ collection, columns, isParentActivated, isAlterScript }) => {
 	const columnStatements = [];
 	const constraintStatements = [];
 
@@ -378,11 +378,12 @@ const getColumnsStatement = ({ collection, columns, isParentActivated }) => {
 		const { columnStatement, constraintsStatement } = getColumnStatementParts({
 			collection,
 			column: { ...columns[name], name, isParentActivated },
+			isAlterScript,
 		});
 
 		columnStatements.push(columnStatement);
 
-		if (constraintsStatement) {
+		if (!isAlterScript && constraintsStatement) {
 			constraintStatements.push(constraintsStatement);
 		}
 	}
@@ -390,7 +391,7 @@ const getColumnsStatement = ({ collection, columns, isParentActivated }) => {
 	return [...columnStatements, ...constraintStatements].join(',\n');
 };
 
-const getColumnConstraintsStatement = ({ collection, column }) => {
+const getColumnConstraintsStatement = ({ collection, column, isAlterScript }) => {
 	const result = {
 		inline: '',
 		separate: '',
@@ -445,7 +446,7 @@ const getColumnConstraintsStatement = ({ collection, column }) => {
 		);
 	}
 
-	if (defaultValue) {
+	if (defaultValue && !isAlterScript) {
 		result.inline = ` DEFAULT ${defaultValue}`;
 	}
 
