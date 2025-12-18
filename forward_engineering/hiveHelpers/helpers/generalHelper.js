@@ -72,7 +72,7 @@ const getTypeDescriptor = typeName => {
 	}
 
 	try {
-		descriptors[typeName] = require(`../../types/${typeName}.json`);
+		descriptors[typeName] = require(`../../../types/${typeName}.json`);
 
 		return descriptors[typeName];
 	} catch {
