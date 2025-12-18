@@ -11,6 +11,7 @@ const {
 const { getColumnsStatement, getColumnStatementParts, getColumns } = require('./columnHelper');
 const keyHelper = require('./keyHelper');
 const constraintHelper = require('./constraintHelper');
+const { TABLE_FORMAT } = require('../../../shared/constants');
 
 const getCreateStatement = ({
 	dbName,
@@ -166,11 +167,14 @@ const removePartitions = (columns, partitions) => {
 	);
 };
 
-const prepareTableProperties = (tableProperties = '') => {
-	const regex = /^\((?<properties>[\s\S]*)\)$/;
-	const match = regex.exec(tableProperties);
-	const properties = match?.groups.properties || '';
-	return properties.trim() ? tableProperties : '';
+const getTableProperties = tableData => {
+	const icebergTableProperty = tableData.tableFormat === TABLE_FORMAT.iceberg ? '"table_type"="ICEBERG", ' : '';
+	const tableProperties = (tableData.tableProperties ?? [])
+		.map(prop => `"${prop.tablePropKey}"="${prop.tablePropValue}"`)
+		.join(', ');
+	const tablePropertiesClause = icebergTableProperty + tableProperties;
+
+	return tablePropertiesClause ? `(${tablePropertiesClause})` : '';
 };
 
 const getSkewedKeyStatement = (skewedKeys, skewedOn, asDirectories, deactivatedColumnNames, isParentItemActivated) => {
@@ -289,7 +293,7 @@ const getTableStatement = (
 		rowFormatStatement: getRowFormat(tableData),
 		storedAsStatement: getStoredAsStatement(tableData),
 		location: tableData.location,
-		tableProperties: prepareTableProperties(tableData.tableProperties),
+		tableProperties: getTableProperties(tableData),
 		selectStatement: '',
 		isActivated: isTableActivated,
 		ifNotExist: tableData.ifNotExist,
