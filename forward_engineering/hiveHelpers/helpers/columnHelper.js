@@ -490,7 +490,7 @@ const clearComplexStructure = ({ type }) => {
 		return type;
 	}
 
-	const structureRegExp = /<([\s\S]+)>$/;
+	const structureRegExp = /<([\s\S]+?)>$/;
 	const [, subType] = structureRegExp.exec(type) ?? ['', ''];
 	const structure = isArray ? clearComplexStructure({ type: subType }) : '';
 
