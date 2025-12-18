@@ -302,7 +302,7 @@
 				},
 				"separate": {
 					"default": false,
-					"disabled": false,
+					"disabled": true,
 					"disabledLabel": ""
 				},
 				"ignore": {
@@ -358,39 +358,6 @@
 								"exist": true
 							}
 						]
-					},
-					"defaultValue": {
-						"description": ""
-					}
-				}
-			]
-		},
-		{
-			"keyword": "viewComments",
-			"label": "FE_SCRIPT_GENERATION_OPTIONS___VIEW_COMMENTS",
-			"disabled": false,
-			"value": {
-				"inline": {
-					"default": true,
-					"disabled": false,
-					"disabledLabel": ""
-				},
-				"separate": {
-					"default": false,
-					"disabled": false,
-					"disabledLabel": ""
-				},
-				"ignore": {
-					"default": false,
-					"disabled": false,
-					"disabledLabel": ""
-				}
-			},
-			"adapters": [
-				{
-					"dependency": {
-						"key": "viewOn",
-						"exist": true
 					},
 					"defaultValue": {
 						"description": ""
