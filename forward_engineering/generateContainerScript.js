@@ -1,13 +1,14 @@
 const { parseEntities } = require('./hiveHelpers/helpers/parseEntities');
 const { generateContainerScript: generateHiveContainerScript } = require('./hiveHelpers/generateContainerScript');
 const { buildAWSCLIModelScript } = require('./awsCliScriptHelpers/awsScriptHelper');
+const { SCRIPT_FORMAT } = require('../shared/constants');
 
 function generateContainerScript(data, logger, callback, app) {
 	try {
 		const containerData = data.containerData;
 		const jsonSchema = parseEntities(data.entities, data.jsonSchema);
 
-		if (data.options.targetScriptOptions?.keyword === 'hiveQl') {
+		if (data.options.targetScriptOptions?.keyword === SCRIPT_FORMAT.hiveQL) {
 			generateHiveContainerScript(data, logger, callback, app);
 			return;
 		}

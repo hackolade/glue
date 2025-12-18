@@ -1,12 +1,13 @@
 const { generateScript: generateHiveScript } = require('./hiveHelpers/generateScript');
 const { buildAWSCLIScript } = require('./awsCliScriptHelpers/awsScriptHelper');
+const { SCRIPT_FORMAT } = require('../shared/constants');
 
 function generateScript(data, logger, callback, app) {
 	try {
 		const jsonSchema = JSON.parse(data.jsonSchema);
 		const containerData = data.containerData;
 
-		if (data.options.targetScriptOptions?.keyword === 'hiveQl') {
+		if (data.options.targetScriptOptions?.keyword === SCRIPT_FORMAT.hiveQL) {
 			generateHiveScript(data, logger, callback, app);
 			return;
 		}
