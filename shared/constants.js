@@ -3,6 +3,12 @@ const TABLE_FORMAT = {
 	standard: 'Standard',
 };
 
+const SCRIPT_FORMAT = {
+	hiveQL: 'hiveQl',
+	awsCLI: 'awsCli',
+};
+
 module.exports = {
 	TABLE_FORMAT,
+	SCRIPT_FORMAT,
 };

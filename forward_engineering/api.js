@@ -2,9 +2,9 @@
 
 const { GlueClient, CreateDatabaseCommand, CreateTableCommand, GetDatabasesCommand } = require('@aws-sdk/client-glue');
 const { hckFetchAwsSdkHttpHandler } = require('@hackolade/fetch');
-const { getApiStatements } = require('./helpers/awsCliScriptHelpers/applyToInstanceHelper');
-const { generateScript } = require('./helpers/generateScript');
-const { generateContainerScript } = require('./helpers/generateContainerScript');
+const { getApiStatements } = require('./awsCliScriptHelpers/applyToInstanceHelper');
+const { generateScript } = require('./generateScript');
+const { generateContainerScript } = require('./generateContainerScript');
 
 module.exports = {
 	generateScript,

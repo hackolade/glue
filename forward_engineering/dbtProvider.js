@@ -1,11 +1,11 @@
 /**
  * @typedef {import('./types').ColumnDefinition} ColumnDefinition
- * @typedef {import('./types').JsonSchema} JsonSchema
  * @typedef {import('./types').ConstraintDto} ConstraintDto
+ * @typedef {import('./types').JsonSchema} JsonSchema
  */
 
-const { getTypeByProperty } = require('./helpers/columnHelper');
-const { getColumnConstraints } = require('./helpers/keyHelper');
+const columnHelper = require('./hiveHelpers/helpers/columnHelper');
+const constraintHelper = require('./hiveHelpers/helpers/constraintHelper');
 
 class DbtProvider {
 	/**
@@ -20,18 +20,28 @@ class DbtProvider {
 	 * @returns {string}
 	 */
 	decorateType({ columnDefinition }) {
-		const type = getTypeByProperty(columnDefinition);
-		const isComplexType = /^(array|struct)/i.test(type);
+		const type = columnHelper.getTypeByProperty([])(columnDefinition);
 
-		return isComplexType ? type.replace(/<[\s\S]+>$/, '<>') : type;
+		return columnHelper.clearComplexStructure({ type });
 	}
 
 	/**
-	 * @param {{ columnDefinition: ColumnDefinition }}
+	 * @param {{ jsonSchema: JsonSchema }}
 	 * @returns {ConstraintDto[]}
 	 */
-	getColumnConstraints({ columnDefinition }) {
-		return getColumnConstraints({ columnDefinition });
+	getCompositeKeyConstraints({ jsonSchema }) {
+		const compositePrimaryKeys = constraintHelper.getCompositePrimaryKeys({ jsonSchema });
+		const compositeUniqueKeys = constraintHelper.getCompositeUniqueKeys({ jsonSchema });
+
+		return [...compositePrimaryKeys, ...compositeUniqueKeys];
+	}
+
+	/**
+	 * @param {{ columnDefinition: ColumnDefinition; jsonSchema: JsonSchema }}
+	 * @returns {ConstraintDto[]}
+	 */
+	getColumnConstraints({ columnDefinition, jsonSchema }) {
+		return constraintHelper.getColumnConstraints({ columnDefinition });
 	}
 }
 
