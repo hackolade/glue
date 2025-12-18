@@ -20,7 +20,7 @@ class DbtProvider {
 	 * @returns {string}
 	 */
 	decorateType({ columnDefinition }) {
-		const type = columnHelper.getTypeByProperty([], '')(columnDefinition);
+		const type = columnHelper.getTypeByProperty([])(columnDefinition);
 
 		return columnHelper.clearComplexStructure({ type });
 	}

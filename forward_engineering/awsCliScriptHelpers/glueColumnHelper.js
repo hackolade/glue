@@ -43,7 +43,7 @@ const getUnionColumns = (allOf, oneOf) => {
 	let columns = [];
 
 	if (Array.isArray(oneOf)) {
-		const unions = getUnionFromOneOf(getTypeByProperty)({ oneOf });
+		const unions = getUnionFromOneOf(getTypeByProperty())({ oneOf });
 		const oneOfColumns = Object.keys(unions).reduce((acc, typeName) => {
 			acc = [...acc, { Name: typeName, Type: unions[typeName] }];
 			return acc;
@@ -52,7 +52,7 @@ const getUnionColumns = (allOf, oneOf) => {
 	}
 
 	if (Array.isArray(allOf)) {
-		const unions = getUnionFromAllOf(getTypeByProperty)({ allOf });
+		const unions = getUnionFromAllOf(getTypeByProperty())({ allOf });
 
 		const allOfColumns = Object.keys(unions).reduce((acc, typeName) => {
 			acc = [...acc, { Name: typeName, Type: unions[typeName] }];
