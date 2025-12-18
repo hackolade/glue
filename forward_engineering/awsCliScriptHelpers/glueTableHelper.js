@@ -47,7 +47,7 @@ const mapSerdeInfo = tableSchema => {
 	const serDeParameters = getSerDeParams(tableSchema.serDeParameters);
 	return {
 		SerializationLibrary: tableSchema.serDeLibrary,
-		Parameters: Object.assign({}, { paths }, serDeParameters),
+		Parameters: { paths, ...serDeParameters },
 	};
 };
 
@@ -55,7 +55,7 @@ const getSerdePathParams = (parameterPaths = [], properties = {}) => {
 	return parameterPaths
 		.map(({ keyId }) => {
 			const property = Object.entries(properties).find(([key, value]) => value.GUID === keyId);
-			const propertyName = property && property[0];
+			const propertyName = property?.[0];
 			return propertyName;
 		})
 		.join(',');
@@ -78,7 +78,7 @@ const mapTableParameters = tableSchema => {
 			props.classification = tableSchema.classification.toLowerCase();
 		}
 		return props;
-	} catch (err) {
+	} catch {
 		return {};
 	}
 };

@@ -1,6 +1,6 @@
 const { getTypeByProperty, getUnionFromAllOf, getUnionFromOneOf } = require('../hiveHelpers/helpers/columnHelper');
 
-const getGlueTableColumns = (properties = {}, oneOf, allOf) => {
+const getGlueTableColumns = (properties = {}, oneOf = null, allOf = null) => {
 	const unionColumns = getUnionColumns(allOf, oneOf);
 	const columns = Object.entries(properties)
 		.filter(([key, value]) => !value.compositePartitionKey)
@@ -23,7 +23,7 @@ const getGlueTableClusteringKeyColumns = (properties = {}) => {
 const getGlueTableSortingColumns = (sortingItems = [], properties = {}) => {
 	return sortingItems.map(item => {
 		const property = Object.entries(properties).find(([key, value]) => value.GUID === item.keyId);
-		const propertyName = property && property[0];
+		const propertyName = property?.[0];
 		return {
 			Column: propertyName,
 			SortOrder: item.type === 'ascending' ? 1 : 0,
