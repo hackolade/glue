@@ -135,6 +135,18 @@ const encodeStringLiteral = (str = '') => {
 
 const isDeactivatedStatement = statement => statement.startsWith(BEFORE_DEACTIVATED_STATEMENT);
 
+const minifyState = {
+	enabled: false,
+};
+
+const setMinify = enabled => {
+	minifyState.enabled = enabled;
+};
+
+const shouldMinify = () => {
+	return minifyState.enabled;
+};
+
 module.exports = {
 	buildStatement,
 	getName,
@@ -147,4 +159,6 @@ module.exports = {
 	removeRedundantTrailingCommaFromStatement,
 	encodeStringLiteral,
 	isDeactivatedStatement,
+	setMinify,
+	shouldMinify,
 };
