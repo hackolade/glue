@@ -1,5 +1,7 @@
 const _ = require('lodash');
 
+const commentPropKey = 'comment';
+
 const getDifferentItems = (newItems = [], oldItems = []) => {
 	const intersection = _.intersectionWith(newItems, oldItems, _.isEqual);
 	return {
@@ -19,18 +21,10 @@ const hydrateTableProperties = ({ new: newItems, old: oldItems }, name, commentS
 
 	const addCommentProp =
 		isCommentChanged && commentState?.new
-			? {
-					tablePropKey: 'comment',
-					tablePropValue: commentState?.new,
-				}
+			? { tablePropKey: commentPropKey, tablePropValue: commentState?.new }
 			: null;
 
-	const dropCommentProp =
-		isCommentChanged && !commentState?.new
-			? {
-					tablePropKey: 'comment',
-				}
-			: null;
+	const dropCommentProp = isCommentChanged && !commentState?.new ? { tablePropKey: commentPropKey } : null;
 
 	const preparePropertiesName = properties =>
 		properties
