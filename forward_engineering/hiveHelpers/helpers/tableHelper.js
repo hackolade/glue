@@ -46,18 +46,18 @@ const getCreateStatement = ({
 			.map(item => item + ' ')
 			.join('');
 	const fullTableName = dbName ? `${dbName}.${tableName}` : tableName;
-	const hasConstraint = primaryKeyStatement || uniqueKeyStatement || checkStatement;
+	const hasConstraint = primaryKeyStatement || uniqueKeyStatement || checkStatement || foreignKeyStatement;
 
 	return buildStatement(
 		`CREATE${tempExtStatement}TABLE ${ifNotExist ? 'IF NOT EXISTS ' : ''}${fullTableName} (`,
 		isActivated,
 	)(columnStatement, columnStatement + (hasConstraint ? ',' : ''))(
 		primaryKeyStatement,
-		primaryKeyStatement + (uniqueKeyStatement || checkStatement ? ',' : ''),
-	)(uniqueKeyStatement, uniqueKeyStatement + (checkStatement ? ',' : ''))(checkStatement, checkStatement)(
-		foreignKeyStatement,
-		foreignKeyStatement,
-	)(true, ')')(comment, `COMMENT '${encodeStringLiteral(comment)}'`)(
+		primaryKeyStatement + (uniqueKeyStatement || checkStatement || foreignKeyStatement ? ',' : ''),
+	)(uniqueKeyStatement, uniqueKeyStatement + (checkStatement || foreignKeyStatement ? ',' : ''))(
+		checkStatement,
+		checkStatement,
+	)(foreignKeyStatement, foreignKeyStatement)(true, ')')(comment, `COMMENT '${encodeStringLiteral(comment)}'`)(
 		partitionedByKeys,
 		`PARTITIONED BY (${partitionedByKeys})`,
 	)(clusteredKeys, `CLUSTERED BY (${clusteredKeys})`)(sortedKeys && clusteredKeys, `SORTED BY (${sortedKeys})`)(
