@@ -53,11 +53,11 @@ const getCreateStatement = ({
 		isActivated,
 	)(columnStatement, columnStatement + (hasConstraint ? ',' : ''))(
 		primaryKeyStatement,
-		primaryKeyStatement + (uniqueKeyStatement || checkStatement ? ',' : ''),
-	)(uniqueKeyStatement, uniqueKeyStatement + (checkStatement ? ',' : ''))(checkStatement, checkStatement)(
-		foreignKeyStatement,
-		foreignKeyStatement,
-	)(true, ')')(comment, `COMMENT '${encodeStringLiteral(comment)}'`)(
+		primaryKeyStatement + (uniqueKeyStatement || checkStatement || foreignKeyStatement ? ',' : ''),
+	)(uniqueKeyStatement, uniqueKeyStatement + (checkStatement || foreignKeyStatement ? ',' : ''))(
+		checkStatement,
+		checkStatement,
+	)(foreignKeyStatement, foreignKeyStatement)(true, ')')(comment, `COMMENT '${encodeStringLiteral(comment)}'`)(
 		partitionedByKeys,
 		`PARTITIONED BY (${partitionedByKeys})`,
 	)(clusteredKeys, `CLUSTERED BY (${clusteredKeys})`)(sortedKeys && clusteredKeys, `SORTED BY (${sortedKeys})`)(
