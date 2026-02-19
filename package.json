@@ -74,5 +74,8 @@
     },
     "peerDependencies": {
         "electron": "^38"
+    },
+    "overrides": {
+        "minimatch": "10.2.1"
     }
 }
