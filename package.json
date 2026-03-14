@@ -76,6 +76,7 @@
     },
     "overrides": {
         "minimatch": "10.2.4",
-        "fast-xml-parser": "5.3.8"
+        "fast-xml-parser": "5.3.8",
+        "yauzl": "3.2.1"
     }
 }
