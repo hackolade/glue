@@ -72,7 +72,7 @@
         "simple-git-hooks": "2.13.1"
     },
     "peerDependencies": {
-        "electron": "^38"
+        "electron": "^41"
     },
     "overrides": {
         "minimatch": "10.2.4",
