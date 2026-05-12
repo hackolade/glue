@@ -41,13 +41,6 @@
         }
     },
     "description": "Hackolade plugin for AWS Glue Data Catalog",
-    "dependencies": {
-        "@aws-sdk/client-glue": "3.1036.0",
-        "@aws-sdk/xml-builder": "3.972.19",
-        "@hackolade/fetch": "1.1.0",
-        "antlr4": "4.8.0",
-        "lodash": "4.18.1"
-    },
     "simple-git-hooks": {
         "pre-commit": "npm run package && npx lint-staged --config lint-staged.config.js",
         "pre-push": "npm run lint"
@@ -72,12 +65,19 @@
         "prettier": "3.8.1",
         "simple-git-hooks": "2.13.1"
     },
+    "dependencies": {
+        "@aws-sdk/client-glue": "3.1045.0",
+        "@aws-sdk/xml-builder": "3.972.22",
+        "@hackolade/fetch": "1.1.0",
+        "antlr4": "4.8.0",
+        "lodash": "4.18.1"
+    },
     "peerDependencies": {
         "electron": "^41"
     },
     "overrides": {
         "minimatch": "10.2.4",
-        "fast-xml-parser": "5.7.1",
+        "fast-xml-parser": "5.7.3",
         "yauzl": "3.2.1"
     }
 }
