@@ -38,6 +38,8 @@ const isRelationshipActivated = relationship =>
 const isRelatedTableActivated = ({ bucket, collection } = {}) =>
 	bucket?.isActivated !== false && collection?.isActivated !== false;
 
+const areFkFieldsActivated = fields => (fields || []).every(field => field?.isActivated !== false);
+
 const getAddSingleForeignKeyScript = provider => relationship => {
 	const compMod = relationship.role.compMod;
 	const parentTableName = getFullParentTableName(relationship);
@@ -51,7 +53,9 @@ const getAddSingleForeignKeyScript = provider => relationship => {
 		isActivated:
 			isRelationshipActivated(relationship) &&
 			isRelatedTableActivated(compMod.parent) &&
-			isRelatedTableActivated(compMod.child),
+			isRelatedTableActivated(compMod.child) &&
+			areFkFieldsActivated(compMod.parent?.collection?.fkFields) &&
+			areFkFieldsActivated(compMod.child?.collection?.fkFields),
 	});
 	const disableNoValidate = relationship.role?.compMod?.customProperties?.new?.disableNoValidate;
 	const disableNoValidateClause = disableNoValidate ? ' DISABLE NOVALIDATE' : '';
@@ -89,8 +93,17 @@ const getAddForeignKeyScript = provider => relationship => {
 	return commentDeactivatedStatements(script, isActivated);
 };
 
-const isDeleteForeignKeyScriptActivated = relationship =>
-	isRelationshipActivated(relationship) && isRelatedTableActivated(relationship.role.compMod.child);
+const isDeleteForeignKeyScriptActivated = relationship => {
+	const compMod = relationship.role.compMod;
+
+	return (
+		isRelationshipActivated(relationship) &&
+		isRelatedTableActivated(compMod.parent) &&
+		isRelatedTableActivated(compMod.child) &&
+		areFkFieldsActivated(compMod.parent?.collection?.fkFields) &&
+		areFkFieldsActivated(compMod.child?.collection?.fkFields)
+	);
+};
 
 const getDeleteSingleForeignKeyScript = provider => relationship => {
 	const compMod = relationship.role.compMod;
