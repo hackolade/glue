@@ -1,5 +1,6 @@
 const { getFullEntityName } = require('./generalHelper');
 const { prepareName, commentDeactivatedStatements } = require('../generalHelper');
+const { getForeignKeyColumnsStatements } = require('../foreignKeyHelper');
 
 const templates = require('./config/templates');
 const { getItems } = require('./common');
@@ -31,18 +32,31 @@ const getFullChildTableName = relationship => {
 	return getFullEntityName(childDBName, childEntityName);
 };
 
+const isRelationshipActivated = relationship =>
+	(relationship.role?.compMod?.isActivated?.new ?? relationship.role?.isActivated) !== false;
+
+const isRelatedTableActivated = ({ bucket, collection } = {}) =>
+	bucket?.isActivated !== false && collection?.isActivated !== false;
+
 const getAddSingleForeignKeyScript = provider => relationship => {
 	const compMod = relationship.role.compMod;
 	const parentTableName = getFullParentTableName(relationship);
 	const childTableName = getFullChildTableName(relationship);
 
 	const constraintName = getRelationshipName(relationship, parentTableName, childTableName);
-	const childColumns = compMod.child.collection.fkFields.map(field => prepareName(field.name));
-	const parentColumns = compMod.parent.collection.fkFields.map(field => prepareName(field.name));
+	const prepareColumns = fields => fields.map(field => ({ ...field, name: prepareName(field.name) }));
+	const { childColumns, parentColumns, isActivated } = getForeignKeyColumnsStatements({
+		childColumns: prepareColumns(compMod.child.collection.fkFields),
+		parentColumns: prepareColumns(compMod.parent.collection.fkFields),
+		isActivated:
+			isRelationshipActivated(relationship) &&
+			isRelatedTableActivated(compMod.parent) &&
+			isRelatedTableActivated(compMod.child),
+	});
 	const disableNoValidate = relationship.role?.compMod?.customProperties?.new?.disableNoValidate;
 	const disableNoValidateClause = disableNoValidate ? ' DISABLE NOVALIDATE' : '';
 
-	return provider.assignTemplates(templates.addFkConstraint, {
+	const script = provider.assignTemplates(templates.addFkConstraint, {
 		childTableName,
 		constraintName,
 		childColumns,
@@ -50,6 +64,8 @@ const getAddSingleForeignKeyScript = provider => relationship => {
 		parentColumns,
 		disableNoValidate: disableNoValidateClause,
 	});
+
+	return { script, isActivated };
 };
 
 const canRelationshipBeAdded = relationship => {
@@ -68,11 +84,13 @@ const canRelationshipBeAdded = relationship => {
 };
 
 const getAddForeignKeyScript = provider => relationship => {
-	const script = getAddSingleForeignKeyScript(provider)(relationship);
-	const isActivated = Boolean(relationship.role?.compMod?.isActivated?.new);
+	const { script, isActivated } = getAddSingleForeignKeyScript(provider)(relationship);
 
 	return commentDeactivatedStatements(script, isActivated);
 };
+
+const isDeleteForeignKeyScriptActivated = relationship =>
+	isRelationshipActivated(relationship) && isRelatedTableActivated(relationship.role.compMod.child);
 
 const getDeleteSingleForeignKeyScript = provider => relationship => {
 	const compMod = relationship.role.compMod;
@@ -103,20 +121,18 @@ const getDeleteForeignKeyScripts = provider => deletedRelationships => {
 		.filter(relationship => canRelationshipBeDeleted(relationship))
 		.map(relationship => {
 			const script = getDeleteSingleForeignKeyScript(provider)(relationship);
-			const isActivated = Boolean(relationship.role?.compMod?.isActivated?.new);
 
-			return commentDeactivatedStatements(script, isActivated);
+			return commentDeactivatedStatements(script, isDeleteForeignKeyScriptActivated(relationship));
 		});
 };
 
 const getModifyForeignKeyScript = provider => relationship => {
 	const deleteScript = getDeleteSingleForeignKeyScript(provider)(relationship);
-	const addScript = getAddSingleForeignKeyScript(provider)(relationship);
-	const isActivated = Boolean(relationship.role?.compMod?.isActivated?.new);
+	const { script: addScript, isActivated: isAddScriptActivated } =
+		getAddSingleForeignKeyScript(provider)(relationship);
+	const isActivated = isAddScriptActivated && isDeleteForeignKeyScriptActivated(relationship);
 
-	return (
-		commentDeactivatedStatements(deleteScript, isActivated) + commentDeactivatedStatements(addScript, isActivated)
-	);
+	return [deleteScript, addScript].map(script => commentDeactivatedStatements(script, isActivated));
 };
 
 const getAlterForeignKeyScripts = ({ schema, provider, currentSchemaName, ignoreRelationshipIDs = [] }) => {
@@ -146,4 +162,6 @@ const getAlterForeignKeyScripts = ({ schema, provider, currentSchemaName, ignore
 
 module.exports = {
 	getAlterForeignKeyScripts,
+	isRelationshipActivated,
+	isRelatedTableActivated,
 };
