@@ -116,11 +116,12 @@ const getForeignKeyColumnsStatements = ({ childColumns, parentColumns, isActivat
 		isForeignKeyActivated && isParentActivated ? _.partition(columnPairs, 'isActivated') : [columnPairs, []];
 
 	const getColumnsStatement = key => {
-		const activatedColumns = activatedPairs.map(pair => pair[key].name).join(', ');
+		const mapPairs = pairs => pairs.map(pair => pair[key].name).join(', ');
+		const activatedColumns = mapPairs(activatedPairs);
 		if (!deactivatedPairs.length) {
 			return activatedColumns;
 		}
-		return `${activatedColumns} /*, ${deactivatedPairs.map(pair => pair[key].name).join(', ')} */`;
+		return `${activatedColumns} /*, ${mapPairs(deactivatedPairs)} */`;
 	};
 
 	return {
