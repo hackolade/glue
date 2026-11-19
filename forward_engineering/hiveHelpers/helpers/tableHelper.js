@@ -255,7 +255,7 @@ const getTableStatement = (
 	const tableData = getTab(0, entityData);
 	const container = getTab(0, containerData);
 	const isTableActivated =
-		tableData.isActivated && (typeof container.isActivated === 'boolean' ? container.isActivated : true);
+		tableData.isActivated !== false && (typeof container.isActivated === 'boolean' ? container.isActivated : true);
 	const tableName = prepareName(getName(tableData));
 	const { columns, deactivatedColumnNames } = getColumns(jsonSchema, areColumnConstraintsAvailable, definitions);
 	const keyNames = keyHelper.getKeyNames(tableData, jsonSchema, definitions, areColumnConstraintsAvailable);

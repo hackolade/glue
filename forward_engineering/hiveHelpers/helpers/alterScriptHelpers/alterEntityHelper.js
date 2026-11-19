@@ -24,7 +24,8 @@ const {
 	getModifyColumnCheckConstraintsScripts,
 	getModifyCompositeCheckConstraintsScripts,
 } = require('./checkConstraintHelper');
-const { getForeignKeyConstraint } = require('../foreignKeyHelper');
+const { getInlineForeignKeyStatement } = require('../foreignKeyHelper');
+const { isRelationshipActivated, isRelatedTableActivated } = require('./alterForeignKeyHelper');
 
 const tableProperties = [
 	'compositePartitionKey',
@@ -183,19 +184,17 @@ const getAddCollectionsScripts =
 					compMod.code?.new || compMod.name?.new || relationship.role.code || relationship.role.name || '';
 				const constraintName = relationshipName.includes(' ') ? `\`${relationshipName}\`` : relationshipName;
 				const parentTableName = compMod.parent.collection.name;
-				const childColumns = compMod.child.collection.fkFields.map(field => field.name).join(', ');
-				const parentColumns = compMod.parent.collection.fkFields.map(field => field.name).join(', ');
 				const disableNoValidate = relationship.role?.customProperties?.disableNoValidate;
 
-				const statement = getForeignKeyConstraint({
+				return getInlineForeignKeyStatement({
 					constraintName,
-					childColumns,
+					childColumns: compMod.child.collection.fkFields,
 					parentTableName,
-					parentColumns,
+					parentColumns: compMod.parent.collection.fkFields,
 					disableNoValidate,
+					isActivated: isRelationshipActivated(relationship) && isRelatedTableActivated(compMod.parent),
+					isChildTableActivated: entity.role?.isActivated !== false,
 				});
-
-				return statement;
 			})
 			.join(',\n');
 
